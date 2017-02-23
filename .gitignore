@@ -7,6 +7,14 @@
 *.jar
 *.war
 *.ear
-
+*.iml
+.idea/*
+.out/*
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+Будет удалено .idea/
+Будет удалено cfg/
+Будет удалено out/
+Будет удалено pom.xml
+Будет удалено src/
+Будет удалено target/
