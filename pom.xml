@@ -44,7 +44,7 @@
     <properties>
 
         <mysql.mysql-connector-java.version>6.0.5</mysql.mysql-connector-java.version>
-        <org.hibernate.hibernate-core.version>5.2.6</org.hibernate.hibernate-core.version>
+        <org.hibernate.hibernate-core.version>4.3.10.Final</org.hibernate.hibernate-core.version>
         <org.apache.logging.log4j.log4j-api.version>2.2</org.apache.logging.log4j.log4j-api.version>
         <org.apache.logging.log4j.log4j-core.version>2.2</org.apache.logging.log4j.log4j-core.version>
 
@@ -71,5 +71,15 @@
             <artifactId>log4j-core</artifactId>
             <version>${org.apache.logging.log4j.log4j-core.version}</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-core</artifactId>-->
+            <!--<version>5.2.7.Final</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-core</artifactId>-->
+            <!--<version>5.2.7.Final</version>-->
+        <!--</dependency>-->
     </dependencies>
 </project>

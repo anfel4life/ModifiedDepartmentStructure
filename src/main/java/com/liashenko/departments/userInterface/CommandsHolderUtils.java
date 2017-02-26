@@ -1,7 +1,7 @@
 package com.liashenko.departments.userInterface;
 
 
-import com.liashenko.departments.entities.Node;
+import com.liashenko.departments.services.nodesService.NodeGenerator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,9 +40,9 @@ public abstract class CommandsHolderUtils implements Serializable {
     private static final ArrayList<String> employeeCommands = new ArrayList<String>();
 
     static {
-        commandPermissionsMap.put(Node.ROOT_NODE_TYPE, rootCommands);
-        commandPermissionsMap.put(Node.DEPARTMENT_NODE_TYPE, departmentCommands);
-        commandPermissionsMap.put(Node.EMPLOYEE_NODE_TYPE, employeeCommands);
+        commandPermissionsMap.put(NodeGenerator.ROOT_NODE_TYPE, rootCommands);
+        commandPermissionsMap.put(NodeGenerator.DEPARTMENT_NODE_TYPE, departmentCommands);
+        commandPermissionsMap.put(NodeGenerator.EMPLOYEE_NODE_TYPE, employeeCommands);
 
         rootCommands.add(DEPARTMENT_COM);
         rootCommands.add(OPEN_DEPARTMENT_COM);
@@ -69,9 +69,9 @@ public abstract class CommandsHolderUtils implements Serializable {
         employeeCommands.add(HELP_COM);
         employeeCommands.add(EXIT_COM);
 
-        commandPermissionsMap.put(Node.ROOT_NODE_TYPE, rootCommands);
-        commandPermissionsMap.put(Node.DEPARTMENT_NODE_TYPE, departmentCommands);
-        commandPermissionsMap.put(Node.EMPLOYEE_NODE_TYPE, employeeCommands);
+        commandPermissionsMap.put(NodeGenerator.ROOT_NODE_TYPE, rootCommands);
+        commandPermissionsMap.put(NodeGenerator.DEPARTMENT_NODE_TYPE, departmentCommands);
+        commandPermissionsMap.put(NodeGenerator.EMPLOYEE_NODE_TYPE, employeeCommands);
     }
 
     public static boolean isCommandAllowed(String nodeType, String command) {

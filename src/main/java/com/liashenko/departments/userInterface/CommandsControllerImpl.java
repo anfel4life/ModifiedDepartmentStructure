@@ -1,13 +1,12 @@
 package com.liashenko.departments.userInterface;
 
-import com.liashenko.departments.entities.Department;
-import com.liashenko.departments.entities.Developer;
-import com.liashenko.departments.entities.Employee;
-import com.liashenko.departments.entities.Manager;
-import com.liashenko.departments.services.mainDBService.CheckParameters;
-import com.liashenko.departments.services.mainDBService.MainDBServiceImpl;
-import com.liashenko.departments.services.mainDBService.utils.StringConstructorUtils;
+
+import com.liashenko.departments.services.mainDBService.MainServiceImpl;
+import com.liashenko.departments.services.mainDBService.dataSets.DepartmentDataSet;
+import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
 import com.liashenko.departments.services.mainService.MainService;
+import com.liashenko.departments.services.nodesService.Node;
+import com.liashenko.departments.services.nodesService.NodeGenerator;
 import com.liashenko.departments.services.nodesService.VisitedNodesStack;
 
 import java.util.ArrayList;
@@ -18,68 +17,73 @@ public class CommandsControllerImpl implements CommandsController {
     private MainService mainService;
 
     public CommandsControllerImpl() {
-        mainService = new MainDBServiceImpl();
+        mainService = new MainServiceImpl();
     }
 
     @Override
     public String createNewDepartment(String departmentName) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.CREATE_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-
-        if (mainService.createNewDepartment(departmentName)) {
-            return "The department with name " + departmentName + " was created.\n"
-                    + StringConstructorUtils.departmentList(mainService.getDepartmentsList());
+        if (mainService.createNewDepartment(departmentName)){
+            return StringConstructorUtils.departmentList(mainService.getDepartmentsList());
         }
-        return "Operation wasn't successful.\n"
-                + StringConstructorUtils.departmentList(mainService.getDepartmentsList());
+        return "Couldn't create new department with name " + departmentName;
     }
 
     @Override
     public String openDepartment(String departmentName) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.OPEN_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-
-        Department department = mainService.getDepartmentByName(departmentName);
-        if (department != null && department.getId() != 0) {
-            VisitedNodesStack.getInstance().setNode(department);
-            ArrayList<Employee> employeesList = mainService.getDepartmentEmployeesList(department.getId());
-            return "The department with name " + departmentName + " was opened:\n" +
-                    StringConstructorUtils.employeesList(employeesList) + "\n";
+        DepartmentDataSet department  = mainService.getDepartmentByName(departmentName);
+        if (department != null){
+            Node node = new Node(NodeGenerator.getNodeTypeByClassName(department), department.getId(), department.getName());
+            VisitedNodesStack.getInstance().setNode(node);
+//            System.out.println(">>CommandsControllerImpl() openDepartment " + department.getNodeType() +"//"+department.getNodeId());
+            ArrayList<EmployeeDataSet> employeesList = mainService.getDepartmentEmployeesList(department.getId());
+            return StringConstructorUtils.employeesList(employeesList);
         }
-        return "The department with name " + departmentName + " didn't found.\n";
+        return "Department with name " + departmentName + " is absent.";
     }
 
     @Override
     public String removeDepartment(String departmentName) {
-        if (mainService.removeDepartment(departmentName)) {
-            return "The department with name " + departmentName + " was removed.\n" +
-                    StringConstructorUtils.departmentList(mainService.getDepartmentsList());
-        }
-        return "Operation wasn't successful."
-                + StringConstructorUtils.departmentList(mainService.getDepartmentsList());
+        return null;
     }
 
     @Override
     public String departmentsList() {
         VisitedNodesStack.getInstance().clear();
-        ArrayList<Department> departmentsList = mainService.getDepartmentsList();
-        return StringConstructorUtils.departmentList(departmentsList);
+        return StringConstructorUtils.departmentList(mainService.getDepartmentsList());
     }
 
     @Override
     public String createEmployee(String employeeName, String employeeType, String language, String methodology,
                                  String employeeAge) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.CREATE_EMPLOYEE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        int departmentId = VisitedNodesStack.getInstance().peekLast().getNodeId();
-        String departmentName = mainService.getDepartmentById(departmentId).getName();
-        return createEmployee(departmentId, departmentName, employeeName, employeeType, language, methodology, employeeAge);
+        ArrayList<EmployeeDataSet> employeesList = null;
+        int departmentId = lastNode.getNodeId();
+        String departmentName = lastNode.getNodeName();
+        CheckParameters cp = new CheckParameters(employeeName, employeeType, language, methodology, employeeAge);
+        if (cp.isCorrect() && mainService.createNewEmployee(cp.getName(), departmentId, cp.getType(), cp.getLanguage(),
+                cp.getMethodology(), cp.getAge())) {
+            employeesList = mainService.getDepartmentEmployeesList(departmentId);
+            return "Employee " + employeeName + " was created in department " + departmentName + ":\n"
+                    + StringConstructorUtils.employeesList(employeesList);
+        } else {
+            return "Creating new employee in department " + departmentName + " wasn't successful:" + "\n"
+                    + cp.getMessage() + "\n"
+                    + StringConstructorUtils.employeesList(employeesList);
+        }
     }
 
     @Override
@@ -89,139 +93,114 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.CREATE_EMPLOYEE_IN_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        Department department = mainService.getDepartmentByName(departmentName);
-        int departmentId = department != null ? department.getId() : 0;
-        return createEmployee(departmentId, departmentName, employeeName, employeeType, language, methodology, employeeAge);
+        return null;
     }
 
-    private String createEmployee(int departmentId, String departmentName, String employeeName, String employeeType,
-                                  String language, String methodology, String employeeAge) {
-        ArrayList<Employee> employeesList;
-        CheckParameters cp = new CheckParameters(employeeName, employeeType, language, methodology, employeeAge);
-        if (cp.isCorrect() && mainService.createNewEmployee(cp.getName(), departmentId, cp.getType(), cp.getLanguage(),
-                cp.getMethodology(), cp.getAge())) {
-            employeesList = mainService.getDepartmentEmployeesList(departmentId);
-            return "Employee " + cp.getName() + " was created in department " + departmentName + ":\n"
-                    + StringConstructorUtils.employeesList(employeesList);
-        } else {
-            employeesList = mainService.getDepartmentEmployeesList(departmentId);
-            return "Creating new employee in department " + departmentName + " wasn't successful:" + "\n"
-                    + cp.getMessage() + "\n"
-                    + StringConstructorUtils.employeesList(employeesList);
+    @Override
+    public String openEmployee(String employeeId) {
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
+                CommandsHolderUtils.OPEN_EMPLOYEE_COM)) {
+            return COMMAND_IS_NOT_ALLOWED_MSG;
         }
+        EmployeeDataSet employee = mainService.getEmployeeById(new CheckParameters().checkId(employeeId));
+        if (employee != null){
+            return StringConstructorUtils.getEmployeeInfo(employee);
+        }
+        return "Employee with id " + employeeId + " is absent.";
     }
 
     @Override
     public String updateEmployee(String employeeId, String employeeName, String skillKey, String skill,
                                  String employeeAge) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.UPDATE_EMPLOYEE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        int departmentId = VisitedNodesStack.getInstance().peekLast().getNodeId();
-        Employee employeeToUpdate = mainService.getEmployeeById(employeeId);
-        ArrayList<Employee> employeesList;
-        CheckParameters cp = new CheckParameters(employeeId, employeeName, skillKey, skill, employeeAge, employeeToUpdate);
-        if (cp.isCorrect() && mainService.updateEmployee(cp.getId(), cp.getName(), cp.getLanguage(), cp.getMethodology(),
-                cp.getAge())) {
+
+        ArrayList<EmployeeDataSet> employeesList;
+        int departmentId = lastNode.getNodeId();
+        int id  = new CheckParameters().checkId(employeeId);
+        EmployeeDataSet employeeToUpdate = mainService.getEmployeeById(id);
+        CheckParameters cp = new CheckParameters(employeeId, employeeName, skillKey, skill, employeeAge,
+                employeeToUpdate);
+        employeeToUpdate = cp.getEmployeeToUpdate();
+        employeeToUpdate.setDepartmentId(departmentId);
+        if (cp.isCorrect() && mainService.updateEmployee(employeeToUpdate)) {
             employeesList = mainService.getDepartmentEmployeesList(departmentId);
             return "Employee id:" + employeeId + " was updated:\n"
                     + StringConstructorUtils.employeesList(employeesList);
-        } else {
+        }
             employeesList = mainService.getDepartmentEmployeesList(departmentId);
             return "Updating employee id:" + employeeId + " wasn't successful:\n"
                     + cp.getMessage() + "\n"
                     + StringConstructorUtils.employeesList(employeesList);
-        }
     }
 
     @Override
     public String removeEmployee(String employeeId) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.REMOVE_EMPLOYEE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        int departmentId = VisitedNodesStack.getInstance().peekLast().getNodeId();
-        ArrayList<Employee> employeesList;
-        if (mainService.removeEmployee(employeeId)) {
-            employeesList = mainService.getDepartmentEmployeesList(departmentId);
-            return "Employee id:" + employeeId + " was removed:\n"
-                    + StringConstructorUtils.employeesList(employeesList);
-        } else {
-            employeesList = mainService.getDepartmentEmployeesList(departmentId);
-            return "Removing employee id:" + employeeId + " wasn't successful:\n"
+        int id  = new CheckParameters().checkId(employeeId);
+        int departmentId = lastNode.getNodeId();
+        ArrayList<EmployeeDataSet> employeesList;
+         if (mainService.removeEmployee(id)){
+             employeesList = mainService.getDepartmentEmployeesList(departmentId);
+            return "Employee id:" + employeeId + " was deleted from department: " + lastNode.getNodeName() +"\n"
                     + StringConstructorUtils.employeesList(employeesList);
         }
-    }
-
-    @Override
-    public String openEmployee(String employeeId) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
-                CommandsHolderUtils.OPEN_EMPLOYEE_COM)) {
-            return COMMAND_IS_NOT_ALLOWED_MSG;
-        }
-        Employee employee = mainService.getEmployeeById(employeeId);
-        if (employee != null) {
-            return StringConstructorUtils.getEmployeeInfo(employee);
-        }
-        return "There isn't an employee with id:" + employeeId + "\n";
+        employeesList = mainService.getDepartmentEmployeesList(departmentId);
+        return "Deleting employee id:" + employeeId + " wasn't successful:\n"
+                + StringConstructorUtils.employeesList(employeesList);
     }
 
     @Override
     public String help() {
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
+                CommandsHolderUtils.HELP_COM)) {
+            return COMMAND_IS_NOT_ALLOWED_MSG;
+        }
         StringBuilder strings = new StringBuilder();
-        ArrayList<String> commandsList = VisitedNodesStack.getInstance().peekLast().getNodeCommands(
+        ArrayList<String> commandsList = CommandsHolderUtils.getCommands(
                 VisitedNodesStack.getInstance().peekLast().getNodeType());
         for (String com : commandsList) {
             strings.append(com).append("\n");
-        }
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
-                CommandsHolderUtils.HELP_COM)) {
-            return COMMAND_IS_NOT_ALLOWED_MSG;
         }
         return strings.toString();
     }
 
     @Override
     public String all() {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.ALL_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        return StringConstructorUtils.allEmployeeView(mainService.getAllEmployeeView());
+        return null;
     }
 
     @Override
     public String searchEmployeeInDepartmentByAge(String departmentName, String age) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.SEARCH_EMPLOYEE_IN_DEPARTMENT_BY_AGE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        CheckParameters cp = new CheckParameters(departmentName, age);
-        if (cp.isCorrect()) {
-            return StringConstructorUtils.getEmployeeList(mainService.getEmployeesFromDepartmentByAge(
-                    cp.getDepartmentName(), cp.getAge()));
-        }
-        return "There aren't " + age + "-year old employees in " + departmentName;
+        return null;
     }
 
     @Override
     public String searchDepartmentWithTopEmployees(String employeeType) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
                 CommandsHolderUtils.MAX_EMPLOYEES_IN_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-
-        switch (employeeType) {
-            case "d":
-                employeeType = Developer.DEVELOPER_EMPLOYEE;
-                break;
-            case "m":
-                employeeType = Manager.MANAGER_EMPLOYEE;
-                break;
-            default:
-                return "Wrong type!";
-        }
-        return StringConstructorUtils.topDepartmentsList(mainService.getEmployeeCountWithType(employeeType), employeeType);
+        return null;
     }
 }

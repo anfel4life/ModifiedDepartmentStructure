@@ -1,9 +1,10 @@
 package com.liashenko.departments.main;
 
 
+import com.liashenko.departments.services.mainDBService.MainServiceImpl;
+import com.liashenko.departments.services.mainService.MainService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.liashenko.departments.services.mainDBService.utils.ConnectionUtils;
 import com.liashenko.departments.userInterface.CommandsParser;
 
 import java.io.BufferedReader;
@@ -17,13 +18,13 @@ public class ModifiedStaffStructureConstructor {
         BufferedReader br = null;
         boolean isContinue = true;
         logger.info("Logger run");
-        if (ConnectionUtils.isTablesExist()) {
+//        if (ConnectionUtils.isTablesExist()) {
             CommandsParser comParser = new CommandsParser();
             System.out.print("Enter command and press <Enter> (\"help\" for help).");
             System.out.println();
+//            new MainServiceImpl().printConnectInfo();
             try {
                 br = new BufferedReader(new InputStreamReader(System.in));
-
                 while (isContinue) {
                     System.out.print(">_ ");
                     String input = br.readLine();
@@ -47,8 +48,8 @@ public class ModifiedStaffStructureConstructor {
             }
             System.out.println("Exit!");
             System.exit(0);
-        } else {
-            System.out.print("Couldn't create tables in database `STAFF`.\nExit.");
-        }
+//        } else {
+//            System.out.print("Couldn't create tables in database `STAFF`.\nExit.");
+//        }
     }
 }

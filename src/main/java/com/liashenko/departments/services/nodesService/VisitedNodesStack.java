@@ -1,19 +1,19 @@
 package com.liashenko.departments.services.nodesService;
 
-import com.liashenko.departments.entities.Node;
-import com.liashenko.departments.entities.Root;
+
+import com.liashenko.departments.services.mainDBService.dataSets.Root;
 
 import java.util.LinkedList;
 
 public class VisitedNodesStack {
     private static VisitedNodesStack INSTANCE;
-    private static LinkedList<Node> NODES_STACK;
-    private static Root ROOT_NODE;
+    private static LinkedList<Node> nodesStack;
+    private static Node ROOT_NODE;
 
     private VisitedNodesStack() {
-        NODES_STACK = new LinkedList<Node>();
-        ROOT_NODE = new Root();
-        NODES_STACK.add(ROOT_NODE);
+        nodesStack = new LinkedList<Node>();
+        ROOT_NODE = new Node();
+        nodesStack.add(ROOT_NODE);
     }
 
     public static VisitedNodesStack getInstance() {
@@ -24,25 +24,25 @@ public class VisitedNodesStack {
     }
 
     public void setNode(Node node) {
-        if (node.getNodeId() != NODES_STACK.peekLast().getNodeId()) {
-            NODES_STACK.add(node);
+        if (node.getNodeId() != nodesStack.peekLast().getNodeId()) {
+            nodesStack.add(node);
         }
     }
 //
-//    public Node getPreviousNode(Node node) {
-//        int lastIndex = NODES_STACK.lastIndexOf(node);
+//    public NodeGenerator getPreviousNode(NodeGenerator node) {
+//        int lastIndex = nodesStack.lastIndexOf(node);
 //        if (lastIndex > 0) {
-//            return NODES_STACK.get(lastIndex - 1);
+//            return nodesStack.get(lastIndex - 1);
 //        }
 //        return null;
 //    }
 
     public void clear() {
-        NODES_STACK.clear();
-        NODES_STACK.add(ROOT_NODE);
+        nodesStack.clear();
+        nodesStack.add(ROOT_NODE);
     }
 
     public Node peekLast() {
-        return NODES_STACK.peekLast();
+        return nodesStack.peekLast();
     }
 }
