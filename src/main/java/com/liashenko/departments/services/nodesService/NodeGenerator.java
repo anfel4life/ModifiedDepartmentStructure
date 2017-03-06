@@ -27,8 +27,6 @@ public abstract class NodeGenerator {
         root.add(Root.class.getName());
         department.add(DepartmentDataSet.class.getName());
         employee.add(EmployeeDataSet.class.getName());
-//        employee.add();
-//        employee.add();
         nodeMap.put(NodeGenerator.ROOT_NODE_TYPE, root);
         nodeMap.put(NodeGenerator.DEPARTMENT_NODE_TYPE, department);
         nodeMap.put(NodeGenerator.EMPLOYEE_NODE_TYPE, employee);

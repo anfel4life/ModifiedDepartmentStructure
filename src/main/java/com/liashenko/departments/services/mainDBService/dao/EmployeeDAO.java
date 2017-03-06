@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.io.Serializable;
@@ -13,16 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAO extends EntityDAO {
-//    private Session session;
 
     public EmployeeDAO(Session session) {
         super(session);
-//        this.session = session;
     }
-
-//    public EmployeeDataSet getEmployee(String id) throws HibernateException {
-//        return (EmployeeDataSet) session.get(EmployeeDataSet.class, id);
-//    }
 
     public EmployeeDataSet getEmployee(int id) {
         Criteria cr = session.createCriteria(EmployeeDataSet.class);

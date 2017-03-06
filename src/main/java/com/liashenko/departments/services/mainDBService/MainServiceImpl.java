@@ -16,8 +16,7 @@ import org.hibernate.service.ServiceRegistry;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 
 public class MainServiceImpl implements MainService {
@@ -47,30 +46,6 @@ public class MainServiceImpl implements MainService {
         configuration.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
         return configuration;
     }
-
-//public EmployeeDataSet getEmployee(int id) throws DBException {
-//    try {
-//        Session session = sessionFactory.openSession();
-//        DepartmentDAO dao = new DepartmentDAO(session);
-//        EmployeeDataSet dataSet = dao.getUserLogin(login);
-//        session.close();
-//        return dataSet;
-//    } catch (HibernateException e) {
-//        throw new DBException(e);
-//    }
-//}
-
-//    public DepartmentDataSet getDepartment(int id) throws DBException {
-//        try {
-//            Session session = sessionFactory.openSession();
-//            DepartmentDAO departmentDao = new DepartmentDAO(session);
-//            DepartmentDataSet dataSet = departmentDao.getDepartment(id);
-//            session.close();
-//            return dataSet;
-//        } catch (HibernateException e) {
-//            throw new DBException(e);
-//        }
-//    }
 
     public void printConnectInfo() {
         try {
@@ -117,14 +92,24 @@ public class MainServiceImpl implements MainService {
             session.close();
         } catch (HibernateException e) {
 //            throw new DBException(e);
+            System.out.println(">>MainServiceImpl() createNewDepartment " + e);
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean removeDepartment(String departmentName) {
-        return false;
+    public boolean removeDepartment(int departmentId) {
+        try {
+            Session session = sessionFactory.openSession();
+            DepartmentDAO departmentDao = new DepartmentDAO(session);
+            departmentDao.removeDepartment(departmentId);
+            session.close();
+        } catch (HibernateException e) {
+            System.out.println(">>MainServiceImpl() removeDepartment " + e);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -224,17 +209,91 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public ArrayList<HashMap<String, String>> getAllEmployeeView() {
-        return null;
+    public LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>> getAllEmployeeView() {
+        LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>> result =
+                new LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>>();
+        try {
+            Session session = sessionFactory.openSession();
+            DepartmentDAO departmentDAO = new DepartmentDAO(session);
+            ArrayList<DepartmentDataSet> departments = departmentDAO.getDepartments();
+            if (departments != null && !departments.isEmpty()){
+                for (DepartmentDataSet department : departments) {
+                    ArrayList<EmployeeDataSet> employees = new ArrayList<EmployeeDataSet>();
+                    employees = departmentDAO.getEmployees(department.getId());
+                    result.put(department, employees);
+                }
+            }
+            session.close();
+        } catch (HibernateException e) {
+            System.out.println(">>MainServiceImpl() getEmployeeById " + e);
+        }
+        return result;
     }
 
     @Override
-    public ArrayList<String> getEmployeeCountWithType(String employeeType) {
-        return null;
+    public HashSet<DepartmentDataSet>  getEmployeeCountWithType(String employeeType) {
+        HashSet<DepartmentDataSet> result = new HashSet<DepartmentDataSet>();
+        try {
+            Session session = sessionFactory.openSession();
+            DepartmentDAO departmentDAO = new DepartmentDAO(session);
+            TreeMap<Integer, DepartmentDataSet> sortedByCountMap =
+                    new TreeMap<Integer, DepartmentDataSet>(Collections.reverseOrder());
+            ArrayList<DepartmentDataSet> departments = departmentDAO.getDepartments();
+            if (departments != null && !departments.isEmpty()){
+                for (DepartmentDataSet department : departments) {
+                    ArrayList<EmployeeDataSet> employeesByType = new ArrayList<EmployeeDataSet>();
+                    ArrayList<EmployeeDataSet> employees = departmentDAO.getEmployees(department.getId());
+                    if (employees != null && !employees.isEmpty()){
+                        Integer employeesCount = 0;
+                        for (EmployeeDataSet employee : employees){
+                            if (employee.getType().equals(employeeType)){
+                                employeesCount = employeesCount + 1;
+                                employeesByType.add(employee);
+                            }
+                        }
+                        sortedByCountMap.put(employeesCount, department);
+                    }
+                }
+            }
+            session.close();
+
+            if (sortedByCountMap != null && !sortedByCountMap.isEmpty()){
+
+                int maxCount = sortedByCountMap.firstKey();
+                for (Map.Entry<Integer, DepartmentDataSet> entry : sortedByCountMap.entrySet()) {
+                   int count = entry.getKey();
+                   if (count >= maxCount){
+                        result.add(entry.getValue());
+                   } else {
+                       break;
+                   }
+                }
+            }
+        } catch (HibernateException e) {
+            System.out.println(">>MainServiceImpl() getEmployeeById " + e);
+        }
+        return result;
     }
 
     @Override
-    public ArrayList<HashMap<String, String>> getEmployeesFromDepartmentByAge(String departmentName, String age) {
-        return null;
+    public ArrayList<EmployeeDataSet> getEmployeesFromDepartmentByAge(String departmentName, String age) {
+        ArrayList<EmployeeDataSet> resultList = new ArrayList<EmployeeDataSet>();
+        try {
+            Session session = sessionFactory.openSession();
+            DepartmentDAO departmentDAO = new DepartmentDAO(session);
+            DepartmentDataSet department = departmentDAO.getDepartment(departmentName);
+            ArrayList<EmployeeDataSet> employeesList = departmentDAO.getEmployees(department.getId());
+            if (employeesList != null && !employeesList.isEmpty()){
+                for (EmployeeDataSet employee : employeesList){
+                    if (employee.getAge().equals(age)){
+                        resultList.add(employee);
+                    }
+                }
+            }
+            session.close();
+        } catch (HibernateException e) {
+            System.out.println(">>MainServiceImpl() getEmployeeById " + e);
+        }
+        return resultList;
     }
 }

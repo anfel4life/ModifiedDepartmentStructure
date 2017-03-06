@@ -31,12 +31,12 @@ public class CheckParameters {
         this.departmentName = checkDepartmentName(departmentName);
     }
 
-    public CheckParameters(String id, String employeeName, String skillKey, String skill, String employeeAge,
+    public CheckParameters(String employeeId, String employeeName, String skillKey, String skill, String employeeAge,
                            EmployeeDataSet employeeToUpdate) {
         this.isCorrect = true;
         this.message = "";
         this.employeeToUpdate = employeeToUpdate;
-        this.id = checkId(id, employeeToUpdate);
+        this.id = checkId(employeeId, employeeToUpdate);
         this.age = checkAge(employeeAge, employeeToUpdate);
         this.name = checkName(employeeName, employeeToUpdate);
         this.methodology = checkMethodology(skillKey, skill, employeeToUpdate);
@@ -165,7 +165,6 @@ public class CheckParameters {
         return departmentName;
     }
 
-
     private String checkMethodology(String type, String methodology) {
         if (type.equals("d") && !methodology.isEmpty()) {
             isCorrect = false;
@@ -218,15 +217,10 @@ public class CheckParameters {
             message = "Developer doesn't have such field.\n";
             return "";
         }
-//        if (skillKey != null && (skillKey.equals("-l") || skillKey.isEmpty())
-//                && employeeToUpdate.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
-//            Developer developer = (Developer) employeeToUpdate;
-//            return skill.isEmpty() ? developer.getLanguage() : skill;
-//        }
         return "";
     }
 
-    private String checkAge(String age) {
+    public String checkAge(String age) {
         short ageShort = 0;
         if (age.isEmpty()) {
             message += "Employee's age isn't defined.\n";

@@ -6,6 +6,8 @@ import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 public interface MainService {
 
@@ -13,7 +15,7 @@ public interface MainService {
 
     boolean createNewDepartment(String newDepartmentName);
 
-    boolean removeDepartment(String departmentName);
+    boolean removeDepartment(int departmentId);
 
     ArrayList<DepartmentDataSet> getDepartmentsList();
 
@@ -21,16 +23,15 @@ public interface MainService {
 
     DepartmentDataSet getDepartmentById(int departmentId);
 
-    ArrayList<String> getEmployeeCountWithType(String employeeType);
+    HashSet<DepartmentDataSet> getEmployeeCountWithType(String employeeType);
 
-    ArrayList<HashMap<String, String>> getEmployeesFromDepartmentByAge(String departmentName, String age);
+    ArrayList<EmployeeDataSet> getEmployeesFromDepartmentByAge(String departmentName, String age);
 
     EmployeeDataSet getEmployeeById(int employeeId);
 
     boolean updateEmployee(EmployeeDataSet employeeToUpdate);
-    ArrayList<HashMap<String, String>> getAllEmployeeView();
+    LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>> getAllEmployeeView();
 
-//    int getLastDepartment();
     boolean createNewEmployee(String employeeName, int departmentId, String employeeType,
                               String language, String methodology, String employeeAge);
 

@@ -2,9 +2,9 @@ package com.liashenko.departments.userInterface;
 
 import com.liashenko.departments.services.mainDBService.dataSets.DepartmentDataSet;
 import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.nodesService.NodeGenerator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public abstract class StringConstructorUtils {
 
@@ -19,21 +19,16 @@ public abstract class StringConstructorUtils {
     private static final String ALL_EMPLOYEE_VIEW_HEAD_DEP_NAME = "Department";
     private static final String ALL_EMPLOYEE_VIEW_HEAD_EMPL_TYPE = "Type";
     private static final String ALL_EMPLOYEE_VIEW_HEAD_EMPL_AGE = "Age";
-    public static final String EMPLOYEE_COL_DEPARTMENT_NAME = "department name";
 
-    public static final String EMPLOYEE_TABLE_NAME = "EMPLOYEE";
-    public static final String EMPLOYEE_COL_AGE = "age";
-    public static final String EMPLOYEE_COL_TYPE = "type";
-    public static final String EMPLOYEE_COL_NAME = "name";
-    public static final String DEPARTMENT_TABLE_NAME = "DEPARTMENT";
-    public static final String DEPARTMENT_COL_NAME = "name";
+    private static final String TABLE_HEAD_METHODOLOGY = "Methodology";
+    private static final String TABLE_HEAD_LANGUAGE = "Language";
 
-    public static final String[] ALL_EMPLOYEE_VIEW_COLUMNS_ARR = {
-            EMPLOYEE_TABLE_NAME + "." + EMPLOYEE_COL_NAME,
-            DEPARTMENT_TABLE_NAME + "." + DEPARTMENT_COL_NAME,
-            EMPLOYEE_TABLE_NAME + "." + EMPLOYEE_COL_TYPE,
-            EMPLOYEE_TABLE_NAME + "." + EMPLOYEE_COL_AGE
-    };
+//    public static final String EMPLOYEE_TABLE_NAME = "EMPLOYEE";
+//    public static final String EMPLOYEE_COL_AGE = "age";
+//    public static final String EMPLOYEE_COL_TYPE = "type";
+//    public static final String EMPLOYEE_COL_NAME = "name";
+//    public static final String DEPARTMENT_TABLE_NAME = "DEPARTMENT";
+//    public static final String DEPARTMENT_COL_NAME = "name";
 
     public static String departmentList(ArrayList<DepartmentDataSet> departmentList) {
         StringBuilder sb = new StringBuilder();
@@ -48,19 +43,33 @@ public abstract class StringConstructorUtils {
         return sb.toString();
     }
 
-    public static String allEmployeeView(ArrayList<HashMap<String, String>> employeesList) {
+    public static String allEmployeeView(LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>> employeesList) {
         StringBuilder sb = new StringBuilder();
         if (employeesList != null && !employeesList.isEmpty()) {
-            sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_EMPL_NAME));
             sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_DEP_NAME));
+            sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_EMPL_NAME));
             sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_EMPL_TYPE));
             sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_EMPL_AGE));
             sb.append("|\n");
-            for (HashMap<String, String> rowMap : employeesList) {
-                for (String rowCell : ALL_EMPLOYEE_VIEW_COLUMNS_ARR) {
-                    sb.append("|-").append(symbolsBetweenColumns(rowMap.get(rowCell)));
+            for (Map.Entry<DepartmentDataSet, ArrayList<EmployeeDataSet>> entry : employeesList.entrySet()) {
+                String departmentName = entry.getKey().getName();
+                ArrayList<EmployeeDataSet> employees = new ArrayList<EmployeeDataSet>();
+                employees = entry.getValue();
+                if (employees != null && !employees.isEmpty()){
+                    for (EmployeeDataSet employee : employees){
+                        sb.append("|-").append(symbolsBetweenColumns(departmentName));
+                        sb.append("|-").append(symbolsBetweenColumns(employee.getName()));
+                        sb.append("|-").append(symbolsBetweenColumns(employee.getType()));
+                        sb.append("|-").append(symbolsBetweenColumns(employee.getAge()));
+                        sb.append("|\n");
+                    }
+                } else {
+                    sb.append("|-").append(symbolsBetweenColumns(departmentName));
+                    sb.append("|-").append(symbolsBetweenColumns(""));
+                    sb.append("|-").append(symbolsBetweenColumns(""));
+                    sb.append("|-").append(symbolsBetweenColumns(""));
+                    sb.append("|\n");
                 }
-                sb.append("|\n");
             }
         } else {
             sb.append("No data");
@@ -68,17 +77,17 @@ public abstract class StringConstructorUtils {
         return sb.toString();
     }
 
-    public static String getEmployeeList(ArrayList<HashMap<String, String>> employeesList) {
+    public static String getEmployeeList(ArrayList<EmployeeDataSet> employeesList) {
         StringBuilder sb = new StringBuilder();
         if (employeesList != null && !employeesList.isEmpty()) {
             sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_EMPL_NAME));
             sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_EMPL_TYPE));
-            sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_DEP_NAME));
+            sb.append("|-").append(symbolsBetweenColumns(ALL_EMPLOYEE_VIEW_HEAD_EMPL_AGE));
             sb.append("|\n");
-            for (HashMap<String, String> employeeMap : employeesList) {
-                sb.append("|-").append(symbolsBetweenColumns(employeeMap.get(EMPLOYEE_COL_NAME)));
-                sb.append("|-").append(symbolsBetweenColumns(employeeMap.get(EMPLOYEE_COL_TYPE)));
-                sb.append("|-").append(symbolsBetweenColumns(employeeMap.get(EMPLOYEE_COL_DEPARTMENT_NAME)));
+            for (EmployeeDataSet employee : employeesList) {
+                sb.append("|-").append(symbolsBetweenColumns(employee.getName()));
+                sb.append("|-").append(symbolsBetweenColumns(employee.getType()));
+                sb.append("|-").append(symbolsBetweenColumns(employee.getAge()));
                 sb.append("|\n");
             }
         } else {
@@ -119,12 +128,12 @@ public abstract class StringConstructorUtils {
         return list.toString();
     }
 
-    public static String topDepartmentsList(ArrayList<String> departmentsList, String employeeType) {
+    public static String topDepartmentsList(HashSet<DepartmentDataSet> departmentsSet, String employeeType) {
         StringBuilder list = new StringBuilder();
-        if (departmentsList != null && !departmentsList.isEmpty()) {
+        if (departmentsSet != null && !departmentsSet.isEmpty()) {
             list.append("The department(s) with the largest number of employees (" + employeeType + "):\n");
-            for (String departmentName : departmentsList) {
-                list.append(departmentName).append("\n");
+            for (DepartmentDataSet department : departmentsSet) {
+                list.append(department.getName()).append("\n");
             }
         } else {
             list.append("No departments with employees (" + employeeType + ")");
@@ -155,17 +164,15 @@ public abstract class StringConstructorUtils {
                 .append(String.valueOf(employee.getAge()))
                 .append("\n");
 
-//        if (employee.getType().equals(Manager.MANAGER_NODE_TYPE)) {
-//            Manager manager = (Manager) employee;
-//            info.append(whiteSpaces(TABLE_HEAD_METHODOLOGY)).append(":")
-//                    .append(manager.getMethodology())
-//                    .append("\n");
-//        } else if (employee.getType().equals(Developer.DEVELOPER_NODE_TYPE)) {
-//            Developer developer = (Developer) employee;
-//            info.append(whiteSpaces(TABLE_HEAD_LANGUAGE)).append(":")
-//                    .append(developer.getLanguage())
-//                    .append("\n");
-//        }
+        if (employee.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
+            info.append(whiteSpaces(TABLE_HEAD_METHODOLOGY)).append(":")
+                    .append(employee.getMethodology())
+                    .append("\n");
+        } else if (employee.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
+            info.append(whiteSpaces(TABLE_HEAD_LANGUAGE)).append(":")
+                    .append(employee.getLanguage())
+                    .append("\n");
+        }
         return info.toString();
     }
 

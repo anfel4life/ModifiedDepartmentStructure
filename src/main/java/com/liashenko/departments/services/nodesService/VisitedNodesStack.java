@@ -28,14 +28,6 @@ public class VisitedNodesStack {
             nodesStack.add(node);
         }
     }
-//
-//    public NodeGenerator getPreviousNode(NodeGenerator node) {
-//        int lastIndex = nodesStack.lastIndexOf(node);
-//        if (lastIndex > 0) {
-//            return nodesStack.get(lastIndex - 1);
-//        }
-//        return null;
-//    }
 
     public void clear() {
         nodesStack.clear();

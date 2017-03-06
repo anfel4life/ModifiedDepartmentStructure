@@ -23,10 +23,6 @@ public class Node {
         return nodeType;
     }
 
-//    public void setNodeType(String nodeType) {
-//        this.nodeType = nodeType;
-//    }
-
     public int getNodeId() {
         return nodeId;
     }
@@ -34,8 +30,4 @@ public class Node {
     public String getNodeName() {
         return nodeName;
     }
-
-//    public void setNodeId(int nodeId) {
-//        this.nodeId = nodeId;
-//    }
 }

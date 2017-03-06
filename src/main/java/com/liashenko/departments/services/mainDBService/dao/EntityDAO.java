@@ -12,12 +12,4 @@ public abstract class EntityDAO {
         this.session = session;
     }
 
-    public boolean deleteById(Class<?> type, Serializable id) {
-        Object persistentInstance = session.load(type, id);
-        if (persistentInstance != null) {
-            session.delete(persistentInstance);
-            return true;
-        }
-        return false;
-    }
 }

@@ -53,7 +53,18 @@ public class CommandsControllerImpl implements CommandsController {
 
     @Override
     public String removeDepartment(String departmentName) {
-        return null;
+        Node lastNode = VisitedNodesStack.getInstance().peekLast();
+        if (!CommandsHolderUtils.isCommandAllowed(lastNode.getNodeType(),
+                CommandsHolderUtils.REMOVE_DEPARTMENT_COM)) {
+            return COMMAND_IS_NOT_ALLOWED_MSG;
+        }
+        DepartmentDataSet departmentToRemove = mainService.getDepartmentByName(departmentName);
+        if (departmentToRemove != null){
+            if (mainService.removeDepartment(departmentToRemove.getId())){
+                return "Department " + departmentName + " was deleted.";
+            }
+        }
+        return "Deleting department " + departmentName + " wasn't successful.";
     }
 
     @Override
@@ -70,9 +81,32 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.CREATE_EMPLOYEE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        ArrayList<EmployeeDataSet> employeesList = null;
         int departmentId = lastNode.getNodeId();
         String departmentName = lastNode.getNodeName();
+        return createEmployee(departmentId, departmentName, employeeName, employeeType, language, methodology,
+                employeeAge);
+    }
+
+    @Override
+    public String createEmployee(String departmentName, String employeeName, String employeeType, String language,
+                                 String methodology, String employeeAge) {
+        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
+                CommandsHolderUtils.CREATE_EMPLOYEE_IN_DEPARTMENT_COM)) {
+            return COMMAND_IS_NOT_ALLOWED_MSG;
+        }
+        DepartmentDataSet department = mainService.getDepartmentByName(departmentName);
+        int departmentId = 0;
+        if (department != null){
+            departmentId = department.getId();
+            return createEmployee(departmentId, departmentName, employeeName, employeeType, language, methodology,
+                    employeeAge);
+        }
+        return "Operation wasn't successful.";
+    }
+
+    private String createEmployee(int departmentId, String departmentName, String employeeName, String employeeType,
+                                  String language, String methodology, String employeeAge){
+        ArrayList<EmployeeDataSet> employeesList = null;
         CheckParameters cp = new CheckParameters(employeeName, employeeType, language, methodology, employeeAge);
         if (cp.isCorrect() && mainService.createNewEmployee(cp.getName(), departmentId, cp.getType(), cp.getLanguage(),
                 cp.getMethodology(), cp.getAge())) {
@@ -84,16 +118,6 @@ public class CommandsControllerImpl implements CommandsController {
                     + cp.getMessage() + "\n"
                     + StringConstructorUtils.employeesList(employeesList);
         }
-    }
-
-    @Override
-    public String createEmployee(String departmentName, String employeeName, String employeeType, String language,
-                                 String methodology, String employeeAge) {
-        if (!CommandsHolderUtils.isCommandAllowed(VisitedNodesStack.getInstance().peekLast().getNodeType(),
-                CommandsHolderUtils.CREATE_EMPLOYEE_IN_DEPARTMENT_COM)) {
-            return COMMAND_IS_NOT_ALLOWED_MSG;
-        }
-        return null;
     }
 
     @Override
@@ -181,7 +205,7 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.ALL_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        return null;
+        return StringConstructorUtils.allEmployeeView(mainService.getAllEmployeeView());
     }
 
     @Override
@@ -191,7 +215,9 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.SEARCH_EMPLOYEE_IN_DEPARTMENT_BY_AGE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        return null;
+        CheckParameters cp  = new CheckParameters();
+        String employeeAge  = cp.checkAge(age);
+        return StringConstructorUtils.getEmployeeList(mainService.getEmployeesFromDepartmentByAge(departmentName, employeeAge));
     }
 
     @Override
@@ -201,6 +227,14 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.MAX_EMPLOYEES_IN_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        return null;
+        switch(employeeType){
+            case "m":
+                employeeType = NodeGenerator.MANAGER_NODE_TYPE;
+                break;
+            case "d":
+                employeeType = NodeGenerator.DEVELOPER_NODE_TYPE;
+                break;
+        }
+        return StringConstructorUtils.topDepartmentsList(mainService.getEmployeeCountWithType(employeeType), employeeType);
     }
 }

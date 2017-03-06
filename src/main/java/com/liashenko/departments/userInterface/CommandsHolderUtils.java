@@ -26,12 +26,12 @@ public abstract class CommandsHolderUtils implements Serializable {
             "-m methodology (managers only)\" to create new employee in specific department";
     public static final String DEPARTMENT_COM = "type \"departments\" to return to the list of departments";
     public static final String HELP_COM = "type \"help\" for command list";
-    //    public static final String LOAD_COM = "type \"load\" to load saved staff structure";
-//    public static final String SAVE_COM = "type \"save\" to save loaded staff structure";
+
     public static final String ALL_COM = "type \"all\" to see all info about staff structure";
     public static final String SEARCH_EMPLOYEE_IN_DEPARTMENT_BY_AGE_COM = "type \"search -e -a age_to_search -d department\"" +
             " to search employee by age in specified department";
-    public static final String MAX_EMPLOYEES_IN_DEPARTMENT_COM = "type \"top -d -t type_of_employee\" to see department " +
+    public static final String MAX_EMPLOYEES_IN_DEPARTMENT_COM = "type \"top -d -t type_of_employee (type \"m\" for manager, " +
+            "\"d\" for developer)\" to see department " +
             "with the largest number of employees";
 
     private static final HashMap<String, ArrayList<String>> commandPermissionsMap = new HashMap<String, ArrayList<String>>();

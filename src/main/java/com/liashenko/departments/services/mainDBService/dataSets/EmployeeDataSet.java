@@ -6,41 +6,30 @@ import java.io.Serializable;
 @Entity
 @Table(name = "EMPLOYEE")
 public class EmployeeDataSet  implements Serializable {
-//        private static final long serialVersionUID = -8706689714326132798L;
-//    private String nodeType = EMPLOYEE_NODE_TYPE;
-//    private DepartmentDataSet departmentDataSet;
+        @Id
+        @Column(name = "id")
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int id;
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-//    public static long getSerialVersionUID() {
-//        return serialVersionUID;
-//    }
-
-        @Column(name = "department_id", unique = false, updatable = true)
+        @Column(name = "department_id", updatable = true)
         private int departmentId;
 
-        @Column(name = "age", unique = false, updatable = true)
+        @Column(name = "age")
         private String age;
 
-        @Column(name = "type", unique = false, updatable = false)
+        @Column(name = "type",  updatable = false)
         private String type;
 
-        @Column(name = "name", unique = false, updatable = true, length = 25)
+        @Column(name = "name", length = 25)
         private String name;
 
-        @Column(name = "language", unique = false, updatable = true, length = 25)
+        @Column(name = "language", length = 25)
         private String language;
 
-
-        @Column(name = "methodology", unique = false, updatable = true, length = 25)
+        @Column(name = "methodology", length = 25)
         private String methodology;
 
-        @SuppressWarnings("UnusedDeclaration")
         public EmployeeDataSet() {
-//            this.nodeType = NodeGenerator.EMPLOYEE_NODE_TYPE;
         }
 
         public EmployeeDataSet(String name, String type, String age, int department_id, String methodology,
@@ -63,12 +52,6 @@ public class EmployeeDataSet  implements Serializable {
             this.setMethodology(methodology);
             this.setLanguage(language);
         }
-
-//    @ManyToOne
-//    @JoinColumn(name = "departmentId")
-//    public DepartmentDataSet getDepartment() {
-//        return category;
-//    }
 
     public int getId() {
         return id;
@@ -128,20 +111,13 @@ public class EmployeeDataSet  implements Serializable {
 
     @Override
     public String toString() {
-        return "UserDataSet{" +
+        return "EmployeeDataSet{" +
                 "id=" + id +
-                ", name='" + name + "', age='" + age +
-                ", type='" + departmentId + '\'' +
+                ", name='" + name +
+                "', age='" + age +
+                ", type='" + type + ", departmentId='" + departmentId +
+                ", language='" + language +
+                ", methodology='" + methodology + '\'' +
                 '}';
     }
-
-//    @Override
-//    public int getNodeId() {
-//        return id;
-//    }
-//
-//    @Override
-//    public String getNodeType() {
-//        return nodeType;
-//    }
 }
