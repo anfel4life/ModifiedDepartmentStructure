@@ -33,7 +33,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>com.liashenko.departments.main.ModifiedStaffDepartmentStructure</mainClass>
+                            <mainClass>com.liashenko.departments.main.ModifiedStaffStructureConstructor</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -41,45 +41,33 @@
         </plugins>
     </build>
 
-    <properties>
-
-        <mysql.mysql-connector-java.version>6.0.5</mysql.mysql-connector-java.version>
-        <org.hibernate.hibernate-core.version>4.3.10.Final</org.hibernate.hibernate-core.version>
-        <org.apache.logging.log4j.log4j-api.version>2.2</org.apache.logging.log4j.log4j-api.version>
-        <org.apache.logging.log4j.log4j-core.version>2.2</org.apache.logging.log4j.log4j-core.version>
-
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.mysql-connector-java.version}</version>
+            <version>6.0.5</version>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${org.hibernate.hibernate-core.version}</version>
-        </dependency>
+
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${org.apache.logging.log4j.log4j-api.version}</version>
+            <version>2.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${org.apache.logging.log4j.log4j-core.version}</version>
+            <version>2.4.1</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-core</artifactId>-->
-            <!--<version>5.2.7.Final</version>-->
+            <!--<artifactId>hibernate-commons-annotations</artifactId>-->
+            <!--<version>3.0.0.ga</version>-->
         <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-core</artifactId>-->
-            <!--<version>5.2.7.Final</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.3.10.Final</version>
+        </dependency>
     </dependencies>
 </project>
