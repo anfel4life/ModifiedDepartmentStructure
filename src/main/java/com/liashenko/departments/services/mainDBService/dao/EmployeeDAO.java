@@ -1,54 +1,74 @@
 package com.liashenko.departments.services.mainDBService.dao;
 
 
+import com.liashenko.departments.services.mainDBService.HibernateFactory;
 import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EmployeeDAO extends EntityDAO {
 
-    public EmployeeDAO(Session session) {
-        super(session);
-    }
-
     public EmployeeDataSet getEmployee(int id) {
-        Criteria cr = session.createCriteria(EmployeeDataSet.class);
-        return ((EmployeeDataSet) cr.add(Restrictions.eq("id", id)).uniqueResult());
+        EmployeeDataSet employee = null;
+        try {
+            openSession();
+            Criteria cr = session.createCriteria(EmployeeDataSet.class);
+            employee = ((EmployeeDataSet) cr.add(Restrictions.eq("id", id)).uniqueResult());
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return employee;
     }
 
-    public void insertEmployee(EmployeeDataSet newEmployee) throws HibernateException {
-        session.beginTransaction();
-        session.save(newEmployee);
-        session.getTransaction().commit();
+    public boolean insertEmployee(EmployeeDataSet newEmployee) {
+        try {
+            startOperation();
+            session.save(newEmployee);
+            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+            return false;
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return true;
     }
 
-    public void updateEmployee(EmployeeDataSet updatedEmployee) throws HibernateException {
-        session.beginTransaction();
-        session.update(updatedEmployee);
-        session.getTransaction().commit();
+    public boolean updateEmployee(EmployeeDataSet updatedEmployee) {
+        try {
+            startOperation();
+            session.update(updatedEmployee);
+            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+            return false;
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return true;
     }
 
-    public void removeEmployee(int id) throws HibernateException {
-        session.beginTransaction();
-        String hql = "delete from EmployeeDataSet where id = :id";
-        Query query = session.createQuery(hql);
-        query.setInteger("id", id);
-        int rowCount = query.executeUpdate();
-        session.getTransaction().commit();
-        System.out.println(">>EmployeeDAO removeEmployee: " + rowCount);
-    }
-
-    public ArrayList<EmployeeDataSet> getEmployees() {
-        Criteria cr = session.createCriteria(EmployeeDataSet.class);
-        List employeeList = cr.list();
-        return (ArrayList<EmployeeDataSet>) employeeList;
+    public boolean removeEmployee(int id) {
+        try {
+            startOperation();
+            String hql = "delete from EmployeeDataSet where id = :id";
+            Query query = session.createQuery(hql);
+            query.setInteger("id", id);
+            int rowCount = query.executeUpdate();
+            session.getTransaction().commit();
+            System.out.println(">>EmployeeDAO removeEmployee: " + rowCount);
+            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+            return false;
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return true;
     }
 }

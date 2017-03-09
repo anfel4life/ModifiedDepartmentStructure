@@ -23,13 +23,6 @@ public abstract class StringConstructorUtils {
     private static final String TABLE_HEAD_METHODOLOGY = "Methodology";
     private static final String TABLE_HEAD_LANGUAGE = "Language";
 
-//    public static final String EMPLOYEE_TABLE_NAME = "EMPLOYEE";
-//    public static final String EMPLOYEE_COL_AGE = "age";
-//    public static final String EMPLOYEE_COL_TYPE = "type";
-//    public static final String EMPLOYEE_COL_NAME = "name";
-//    public static final String DEPARTMENT_TABLE_NAME = "DEPARTMENT";
-//    public static final String DEPARTMENT_COL_NAME = "name";
-
     public static String departmentList(ArrayList<DepartmentDataSet> departmentList) {
         StringBuilder sb = new StringBuilder();
         if (departmentList != null && !departmentList.isEmpty()) {
@@ -164,7 +157,7 @@ public abstract class StringConstructorUtils {
                 .append(String.valueOf(employee.getAge()))
                 .append("\n");
 
-        if (employee.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
+        if (employee.getType().equals(NodeGenerator.MANAGER_NODE_TYPE)) {
             info.append(whiteSpaces(TABLE_HEAD_METHODOLOGY)).append(":")
                     .append(employee.getMethodology())
                     .append("\n");

@@ -34,12 +34,12 @@ public class DepartmentDataSet implements Serializable  {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -57,6 +57,7 @@ public class DepartmentDataSet implements Serializable  {
     @Override
     public String toString() {
         return "DepartmentDataSet{" +
-                "id=" + id + "', name='" + name + '\'' + '}';
+                "id=" + id +
+                ", name=" + name + "}\n";
     }
 }

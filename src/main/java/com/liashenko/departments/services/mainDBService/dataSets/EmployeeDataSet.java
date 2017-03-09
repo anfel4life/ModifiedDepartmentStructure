@@ -112,12 +112,12 @@ public class EmployeeDataSet  implements Serializable {
     @Override
     public String toString() {
         return "EmployeeDataSet{" +
-                "id=" + id +
-                ", name='" + name +
-                "', age='" + age +
-                ", type='" + type + ", departmentId='" + departmentId +
-                ", language='" + language +
-                ", methodology='" + methodology + '\'' +
-                '}';
+                " id=" + id +
+                ", name=" + name +
+                ", age=" + age +
+                ", type=" + type +
+                ", departmentId=" + departmentId +
+                ", language=" + language +
+                ", methodology=" + methodology + " }\n";
     }
 }
