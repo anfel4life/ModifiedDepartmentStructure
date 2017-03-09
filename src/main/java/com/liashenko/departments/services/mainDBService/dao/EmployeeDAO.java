@@ -11,24 +11,24 @@ import org.hibernate.criterion.Restrictions;
 
 public class EmployeeDAO extends EntityDAO {
 
-    public EmployeeDataSet getEmployee(int id) {
-        EmployeeDataSet employee = null;
+    public EmployeeDataSet getEntity(int entityId) {
+        EmployeeDataSet entity = null;
         try {
             openSession();
             Criteria cr = session.createCriteria(EmployeeDataSet.class);
-            employee = ((EmployeeDataSet) cr.add(Restrictions.eq("id", id)).uniqueResult());
+            entity = ((EmployeeDataSet) cr.add(Restrictions.eq("id", entityId)).uniqueResult());
         } catch (HibernateException e) {
             handleException(e);
         } finally {
             HibernateFactory.close(session);
         }
-        return employee;
+        return entity;
     }
 
-    public boolean insertEmployee(EmployeeDataSet newEmployee) {
+    public boolean updateEntity(EmployeeDataSet entityToUpdate) {
         try {
             startOperation();
-            session.save(newEmployee);
+            session.update(entityToUpdate);
             tx.commit();
         } catch (HibernateException e) {
             handleException(e);
@@ -39,29 +39,15 @@ public class EmployeeDAO extends EntityDAO {
         return true;
     }
 
-    public boolean updateEmployee(EmployeeDataSet updatedEmployee) {
-        try {
-            startOperation();
-            session.update(updatedEmployee);
-            tx.commit();
-        } catch (HibernateException e) {
-            handleException(e);
-            return false;
-        } finally {
-            HibernateFactory.close(session);
-        }
-        return true;
-    }
-
-    public boolean removeEmployee(int id) {
+    public boolean removeEntity(int entityId) {
         try {
             startOperation();
             String hql = "delete from EmployeeDataSet where id = :id";
             Query query = session.createQuery(hql);
-            query.setInteger("id", id);
+            query.setInteger("id", entityId);
             int rowCount = query.executeUpdate();
             session.getTransaction().commit();
-            System.out.println(">>EmployeeDAO removeEmployee: " + rowCount);
+            System.out.println(">>EmployeeDAO removeEntity: " + rowCount);
             tx.commit();
         } catch (HibernateException e) {
             handleException(e);

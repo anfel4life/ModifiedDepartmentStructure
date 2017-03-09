@@ -14,9 +14,18 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 public class HibernateFactory {
-    private static final String hibernate_show_sql = "false";
+
+    private static final String HIBERNATE_DIALECT = "org.hibernate.dialect.MySQLDialect";
+    private static final String CONNECTION_DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
+    private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/STAFF";
+    private static final String CONNECTION_USERNAME = "root";
+    private static final String CONNECTION_PASSWORD = "1";
+    private static final String IS_CONNECTION_AUTOCOMMIT = "true";
+    private static final String IS_SSL = "false";
+    private static final String IS_HIBERNATE_SHOW_SQL = "false";
     //private static final String hibernate_hbm2ddl_auto = "create"; //
-    private static final String hibernate_hbm2ddl_auto = "update"; //update
+    private static final String HIBERNATE_HBM2DDL_AUTO  = "update"; //update
+
     private static SessionFactory sessionFactory;
     private static Logger log = LogManager.getLogger(HibernateFactory.class);
 
@@ -25,15 +34,15 @@ public class HibernateFactory {
         configuration.addAnnotatedClass(EmployeeDataSet.class);
         configuration.addAnnotatedClass(DepartmentDataSet.class);
 
-        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/STAFF");
-        configuration.setProperty("hibernate.connection.username", "root");
-        configuration.setProperty("hibernate.connection.password", "1");
-        configuration.setProperty("hibernate.connection.autocommit", "true");
-        configuration.setProperty("useSSL", "false");
-        configuration.setProperty("hibernate.show_sql", hibernate_show_sql);
-        configuration.setProperty("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
+        configuration.setProperty("hibernate.dialect", HIBERNATE_DIALECT);
+        configuration.setProperty("hibernate.connection.driver_class", CONNECTION_DRIVER_CLASS);
+        configuration.setProperty("hibernate.connection.url", CONNECTION_URL);
+        configuration.setProperty("hibernate.connection.username", CONNECTION_USERNAME);
+        configuration.setProperty("hibernate.connection.password", CONNECTION_PASSWORD);
+        configuration.setProperty("hibernate.connection.autocommit", IS_CONNECTION_AUTOCOMMIT);
+        configuration.setProperty("useSSL", IS_SSL);
+        configuration.setProperty("hibernate.show_sql", IS_HIBERNATE_SHOW_SQL);
+        configuration.setProperty("hibernate.hbm2ddl.auto", HIBERNATE_HBM2DDL_AUTO);
         return configuration;
     }
 
@@ -49,11 +58,8 @@ public class HibernateFactory {
      * @throws HibernateException
      */
     private static SessionFactory configureSessionFactory() throws HibernateException {
-//        Configuration configuration = new Configuration();
-//        configuration.configure();
         Configuration configuration = getMySqlConfiguration();
         sessionFactory = createSessionFactory(configuration);
-//        sessionFactory = configuration.buildSessionFactory();
         return sessionFactory;
     }
 
