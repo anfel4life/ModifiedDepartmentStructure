@@ -1,21 +1,20 @@
-package com.liashenko.departments.services.mainDBService.dao;
+package com.liashenko.departments.services.dbService.dao.daoImplementation;
 
-import com.liashenko.departments.services.mainDBService.DataAccessLayerException;
-import com.liashenko.departments.services.mainDBService.HibernateFactory;
+import com.liashenko.departments.services.dbService.DataAccessLayerException;
+import com.liashenko.departments.services.dbService.HibernateFactoryUtil;
+import com.liashenko.departments.services.dbService.dao.EntityDAO;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public abstract class EntityDAO <T> {
+public abstract class EntityDAOimpl<T> implements EntityDAO<T> {
 
     protected Session session;
     protected Transaction tx;
 
-    public EntityDAO() {
-        HibernateFactory.buildIfNeeded();
+    public EntityDAOimpl() {
+        HibernateFactoryUtil.buildIfNeeded();
     }
-
-    abstract boolean removeEntity (int entityId);
 
     public boolean insertEntity (T entity) {
         try {
@@ -26,24 +25,22 @@ public abstract class EntityDAO <T> {
             handleException(e);
             return false;
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return true;
     }
 
     protected void handleException(HibernateException e) throws DataAccessLayerException {
-        HibernateFactory.rollback(tx);
+        HibernateFactoryUtil.rollback(tx);
         throw new DataAccessLayerException(e);
     }
 
     protected void startOperation() throws HibernateException {
-        session = HibernateFactory.openSession();
+        session = HibernateFactoryUtil.openSession();
         tx = session.beginTransaction();
     }
 
     protected void openSession() throws HibernateException {
-        session = HibernateFactory.openSession();
+        session = HibernateFactoryUtil.openSession();
     }
-    //create interfaces for DAOs and use this abstract class to provide
-    //add logger where it is necessary
 }

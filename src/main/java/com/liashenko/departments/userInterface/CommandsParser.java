@@ -23,15 +23,15 @@ public class CommandsParser {
                 resultMessage = "You didn't enter any commands";
                 break;
             case "create":
-                resultMessage = (commandsArr.length >= 1) ? createStaffUnit(commandsArr) : INCORRECT_INPUT;
+                resultMessage = (commandsArr.length > 1) ? createStaffUnit(commandsArr) : INCORRECT_INPUT;
                 break;
 
             case "rm":
-                resultMessage = (commandsArr.length >= 1) ? removeStaffUnitParse(commandsArr) : INCORRECT_INPUT;
+                resultMessage = (commandsArr.length > 1) ? removeStaffUnitParse(commandsArr) : INCORRECT_INPUT;
                 break;
 
             case "open":
-                resultMessage = (commandsArr.length >= 1) ? openStaffTree(commandsArr) : INCORRECT_INPUT;
+                resultMessage = (commandsArr.length > 1) ? openStaffTree(commandsArr) : INCORRECT_INPUT;
                 break;
 
             case "help":
@@ -43,12 +43,12 @@ public class CommandsParser {
                 break;
 
             case "update":
-                resultMessage = (commandsArr.length >= 1) ? updateStaffUnitParse(commandsArr) : INCORRECT_INPUT;
+                resultMessage = (commandsArr.length > 1) ? updateStaffUnitParse(commandsArr) : INCORRECT_INPUT;
                 break;
 
-            case "exit":
-                resultMessage = (commandsArr.length >= 1) ? updateStaffUnitParse(commandsArr) : INCORRECT_INPUT;
-                break;
+//            case "exit":
+//                resultMessage = (commandsArr.length > 1) ? System.exit(0) : INCORRECT_INPUT;
+//                break;
 
             case "all":
                 resultMessage = comControl.all();

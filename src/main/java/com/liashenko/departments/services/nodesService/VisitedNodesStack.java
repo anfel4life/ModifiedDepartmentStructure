@@ -1,8 +1,6 @@
 package com.liashenko.departments.services.nodesService;
 
 
-import com.liashenko.departments.services.mainDBService.dataSets.Root;
-
 import java.util.LinkedList;
 
 public class VisitedNodesStack {

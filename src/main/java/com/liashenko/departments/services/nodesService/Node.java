@@ -9,8 +9,8 @@ public class Node {
 
     public Node () {
         this.nodeId = 0;
-        this.nodeType = NodeGenerator.ROOT_NODE_TYPE;
-        this.nodeName = NodeGenerator.ROOT_NODE_TYPE;
+        this.nodeType = NodeGeneratorUtil.ROOT_NODE_TYPE;
+        this.nodeName = NodeGeneratorUtil.ROOT_NODE_TYPE;
     }
 
     public Node (String nodeType, int nodeId, String nodeName) {

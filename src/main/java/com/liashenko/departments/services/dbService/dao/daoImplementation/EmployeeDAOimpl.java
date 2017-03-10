@@ -1,15 +1,16 @@
-package com.liashenko.departments.services.mainDBService.dao;
+package com.liashenko.departments.services.dbService.dao.daoImplementation;
 
 
-import com.liashenko.departments.services.mainDBService.HibernateFactory;
-import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.dbService.HibernateFactoryUtil;
+import com.liashenko.departments.services.dbService.dao.EmployeeDAO;
+import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 
-public class EmployeeDAO extends EntityDAO {
+public class EmployeeDAOimpl extends EntityDAOimpl implements EmployeeDAO {
 
     public EmployeeDataSet getEntity(int entityId) {
         EmployeeDataSet entity = null;
@@ -20,7 +21,7 @@ public class EmployeeDAO extends EntityDAO {
         } catch (HibernateException e) {
             handleException(e);
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return entity;
     }
@@ -34,7 +35,7 @@ public class EmployeeDAO extends EntityDAO {
             handleException(e);
             return false;
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return true;
     }
@@ -47,13 +48,12 @@ public class EmployeeDAO extends EntityDAO {
             query.setInteger("id", entityId);
             int rowCount = query.executeUpdate();
             session.getTransaction().commit();
-            System.out.println(">>EmployeeDAO removeEntity: " + rowCount);
             tx.commit();
         } catch (HibernateException e) {
             handleException(e);
             return false;
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return true;
     }

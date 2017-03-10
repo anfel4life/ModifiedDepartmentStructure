@@ -18,7 +18,7 @@ public class ModifiedStaffStructureConstructor {
     public static void main(String[] args) {
         BufferedReader br = null;
         boolean isContinue = true;
-        classLogger.info("Logger run");
+        rootLogger.info("Application has been run.");
             CommandsParser comParser = new CommandsParser();
             System.out.print("Enter command and press <Enter> (\"help\" for help).");
             System.out.println();

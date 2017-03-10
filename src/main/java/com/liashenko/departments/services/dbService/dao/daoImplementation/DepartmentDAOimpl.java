@@ -1,13 +1,14 @@
-package com.liashenko.departments.services.mainDBService.dao;
+package com.liashenko.departments.services.dbService.dao.daoImplementation;
 
-import com.liashenko.departments.services.mainDBService.HibernateFactory;
-import com.liashenko.departments.services.mainDBService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.dbService.HibernateFactoryUtil;
+import com.liashenko.departments.services.dbService.dao.DepartmentDAO;
+import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
+import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
 import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
 import java.util.ArrayList;
 
-public class DepartmentDAO extends EntityDAO {
+public class DepartmentDAOimpl extends EntityDAOimpl implements DepartmentDAO {
 
     public boolean removeEntity(int entityId) {
         try {
@@ -18,7 +19,7 @@ public class DepartmentDAO extends EntityDAO {
             handleException(e);
             return false;
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return true;
     }
@@ -33,7 +34,7 @@ public class DepartmentDAO extends EntityDAO {
         } catch (HibernateException e) {
             handleException(e);
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return entitiesList;
     }
@@ -48,7 +49,7 @@ public class DepartmentDAO extends EntityDAO {
         } catch (HibernateException e) {
             handleException(e);
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return entityChildrenList;
     }
@@ -62,7 +63,7 @@ public class DepartmentDAO extends EntityDAO {
         } catch (HibernateException e) {
             handleException(e);
         } finally {
-            HibernateFactory.close(session);
+            HibernateFactoryUtil.close(session);
         }
         return entity;
     }

@@ -1,8 +1,8 @@
-package com.liashenko.departments.userInterface;
+package com.liashenko.departments.userInterface.utils;
 
-import com.liashenko.departments.services.mainDBService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
-import com.liashenko.departments.services.nodesService.NodeGenerator;
+import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
+import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
 
 import java.util.*;
 
@@ -157,11 +157,11 @@ public abstract class StringConstructorUtils {
                 .append(String.valueOf(employee.getAge()))
                 .append("\n");
 
-        if (employee.getType().equals(NodeGenerator.MANAGER_NODE_TYPE)) {
+        if (employee.getType().equals(NodeGeneratorUtil.MANAGER_NODE_TYPE)) {
             info.append(whiteSpaces(TABLE_HEAD_METHODOLOGY)).append(":")
                     .append(employee.getMethodology())
                     .append("\n");
-        } else if (employee.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
+        } else if (employee.getType().equals(NodeGeneratorUtil.DEVELOPER_NODE_TYPE)) {
             info.append(whiteSpaces(TABLE_HEAD_LANGUAGE)).append(":")
                     .append(employee.getLanguage())
                     .append("\n");

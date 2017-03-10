@@ -1,8 +1,8 @@
 package com.liashenko.departments.userInterface;
 
 
-import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
-import com.liashenko.departments.services.nodesService.NodeGenerator;
+import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
 
 public class CheckParameters {
 
@@ -141,10 +141,10 @@ public class CheckParameters {
         String result;
         switch (type) {
             case "d":
-                result = NodeGenerator.DEVELOPER_NODE_TYPE;
+                result = NodeGeneratorUtil.DEVELOPER_NODE_TYPE;
                 break;
             case "m":
-                result = NodeGenerator.MANAGER_NODE_TYPE;
+                result = NodeGeneratorUtil.MANAGER_NODE_TYPE;
                 break;
             default:
                 result = "";
@@ -184,7 +184,7 @@ public class CheckParameters {
             message += "The methodology field has more than " + EMPLOYEE_METHODOLOGY_FIELD_LENGTH + " symbols";
             return "";
         } else if (!skillKey.isEmpty() && !skillKey.equals("-m")
-                && employeeToUpdate.getType().equals(NodeGenerator.MANAGER_NODE_TYPE)) {
+                && employeeToUpdate.getType().equals(NodeGeneratorUtil.MANAGER_NODE_TYPE)) {
             System.out.println(">>SkilKey: " + skillKey + "/ type: " + employeeToUpdate.getType());
             isCorrect = false;
             message += "Manager doesn't have such field.\n";
@@ -194,7 +194,7 @@ public class CheckParameters {
     }
 
     private String checkLanguage(String type, String language) {
-        if (type.equals(NodeGenerator.MANAGER_NODE_TYPE) && !language.isEmpty()) {
+        if (type.equals(NodeGeneratorUtil.MANAGER_NODE_TYPE) && !language.isEmpty()) {
             isCorrect = false;
             message += "Manager doesn\'t have language field.\n";
             return "";
@@ -212,7 +212,7 @@ public class CheckParameters {
             message = "The language field has more than " + EMPLOYEE_LANGUAGE_FIELD_LENGTH + " symbols";
             return "";
         } else if (!skillKey.isEmpty() && !skillKey.equals("-l")
-                && employeeToUpdate.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
+                && employeeToUpdate.getType().equals(NodeGeneratorUtil.DEVELOPER_NODE_TYPE)) {
             isCorrect = false;
             message = "Developer doesn't have such field.\n";
             return "";
