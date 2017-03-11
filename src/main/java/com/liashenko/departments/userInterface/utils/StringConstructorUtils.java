@@ -4,7 +4,10 @@ import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
 import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
 import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class StringConstructorUtils {
 
@@ -48,8 +51,8 @@ public abstract class StringConstructorUtils {
                 String departmentName = entry.getKey().getName();
                 ArrayList<EmployeeDataSet> employees = new ArrayList<EmployeeDataSet>();
                 employees = entry.getValue();
-                if (employees != null && !employees.isEmpty()){
-                    for (EmployeeDataSet employee : employees){
+                if (employees != null && !employees.isEmpty()) {
+                    for (EmployeeDataSet employee : employees) {
                         sb.append("|-").append(symbolsBetweenColumns(departmentName));
                         sb.append("|-").append(symbolsBetweenColumns(employee.getName()));
                         sb.append("|-").append(symbolsBetweenColumns(employee.getType()));

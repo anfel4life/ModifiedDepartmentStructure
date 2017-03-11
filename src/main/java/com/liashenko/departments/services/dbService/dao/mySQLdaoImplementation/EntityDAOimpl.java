@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.dbService.dao.daoImplementation;
+package com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation;
 
 import com.liashenko.departments.services.dbService.DataAccessLayerException;
 import com.liashenko.departments.services.dbService.HibernateFactoryUtil;
@@ -12,11 +12,11 @@ public abstract class EntityDAOimpl<T> implements EntityDAO<T> {
     protected Session session;
     protected Transaction tx;
 
-    public EntityDAOimpl() {
+    protected EntityDAOimpl() {
         HibernateFactoryUtil.buildIfNeeded();
     }
 
-    public boolean insertEntity (T entity) {
+    public boolean insertEntity(T entity) {
         try {
             startOperation();
             session.save(entity);

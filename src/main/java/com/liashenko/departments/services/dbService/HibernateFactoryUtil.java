@@ -25,11 +25,9 @@ public abstract class HibernateFactoryUtil {
     private static final String IS_SSL = "false";
     private static final String IS_HIBERNATE_SHOW_SQL = "false";
     //private static final String hibernate_hbm2ddl_auto = "create"; //
-    private static final String HIBERNATE_HBM2DDL_AUTO  = "update"; //update
+    private static final String HIBERNATE_HBM2DDL_AUTO = "update"; //update
+    private static final Logger classLogger = LogManager.getLogger(HibernateFactoryUtil.class);
     private static SessionFactory sessionFactory;
-    static final Logger rootLogger = LogManager.getRootLogger();
-    static final Logger classLogger = LogManager.getLogger(HibernateFactoryUtil.class);
-
 
     private static Configuration getMySqlConfiguration() {
         Configuration configuration = new Configuration();

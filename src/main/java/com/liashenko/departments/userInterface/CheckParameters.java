@@ -6,6 +6,10 @@ import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
 
 public class CheckParameters {
 
+    public static final String EMPLOYEE_NAME_FIELD_LENGTH = "25";
+    public static final String EMPLOYEE_LANGUAGE_FIELD_LENGTH = "20";
+    public static final String EMPLOYEE_METHODOLOGY_FIELD_LENGTH = "20";
+    public static final String DEPARTMENT_NAME_FIELD_LENGTH = "45";
     private boolean isCorrect = true;
     private int id;
     private String message = "";
@@ -15,15 +19,9 @@ public class CheckParameters {
     private String methodology;
     private String language;
     private String departmentName;
-
     private EmployeeDataSet employeeToUpdate;
 
-    public static final String EMPLOYEE_NAME_FIELD_LENGTH = "25";
-    public static final String EMPLOYEE_LANGUAGE_FIELD_LENGTH = "20";
-    public static final String EMPLOYEE_METHODOLOGY_FIELD_LENGTH = "20";
-    public static final String DEPARTMENT_NAME_FIELD_LENGTH = "45";
-
-    public CheckParameters(){
+    public CheckParameters() {
     }
 
     public CheckParameters(String departmentName, String age) {
@@ -130,9 +128,9 @@ public class CheckParameters {
     public int checkId(String id) {
         int result;
         try {
-           result = Integer.parseInt(id);
+            result = Integer.parseInt(id);
         } catch (NumberFormatException e) {
-            result  = 0;
+            result = 0;
         }
         return result;
     }
@@ -185,7 +183,6 @@ public class CheckParameters {
             return "";
         } else if (!skillKey.isEmpty() && !skillKey.equals("-m")
                 && employeeToUpdate.getType().equals(NodeGeneratorUtil.MANAGER_NODE_TYPE)) {
-            System.out.println(">>SkilKey: " + skillKey + "/ type: " + employeeToUpdate.getType());
             isCorrect = false;
             message += "Manager doesn't have such field.\n";
             return "";

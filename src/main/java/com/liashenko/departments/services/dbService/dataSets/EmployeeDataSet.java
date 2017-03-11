@@ -5,53 +5,53 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "EMPLOYEE")
-public class EmployeeDataSet  implements Serializable {
-        @Id
-        @Column(name = "id")
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private int id;
+public class EmployeeDataSet implements Serializable {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-        @Column(name = "department_id", updatable = true)
-        private int departmentId;
+    @Column(name = "department_id", updatable = true)
+    private int departmentId;
 
-        @Column(name = "age")
-        private String age;
+    @Column(name = "age")
+    private String age;
 
-        @Column(name = "type",  updatable = false)
-        private String type;
+    @Column(name = "type", updatable = false)
+    private String type;
 
-        @Column(name = "name", length = 25)
-        private String name;
+    @Column(name = "name", length = 25)
+    private String name;
 
-        @Column(name = "language", length = 25)
-        private String language;
+    @Column(name = "language", length = 25)
+    private String language;
 
-        @Column(name = "methodology", length = 25)
-        private String methodology;
+    @Column(name = "methodology", length = 25)
+    private String methodology;
 
-        public EmployeeDataSet() {
-        }
+    public EmployeeDataSet() {
+    }
 
-        public EmployeeDataSet(String name, String type, String age, int department_id, String methodology,
-                               String language) {
-            this.setName(name);
-            this.setType(type);
-            this.setAge(age);
-            this.setDepartmentId(department_id);
-            this.setMethodology(methodology);
-            this.setLanguage(language);
-        }
+    public EmployeeDataSet(String name, String type, String age, int department_id, String methodology,
+                           String language) {
+        this.setName(name);
+        this.setType(type);
+        this.setAge(age);
+        this.setDepartmentId(department_id);
+        this.setMethodology(methodology);
+        this.setLanguage(language);
+    }
 
-        public EmployeeDataSet(int id, String name, String type, String age, int department_id, String methodology,
-                               String language) {
-            this.setId(id);
-            this.setName(name);
-            this.setType(type);
-            this.setAge(age);
-            this.setDepartmentId(department_id);
-            this.setMethodology(methodology);
-            this.setLanguage(language);
-        }
+    public EmployeeDataSet(int id, String name, String type, String age, int department_id, String methodology,
+                           String language) {
+        this.setId(id);
+        this.setName(name);
+        this.setType(type);
+        this.setAge(age);
+        this.setDepartmentId(department_id);
+        this.setMethodology(methodology);
+        this.setLanguage(language);
+    }
 
     public int getId() {
         return id;

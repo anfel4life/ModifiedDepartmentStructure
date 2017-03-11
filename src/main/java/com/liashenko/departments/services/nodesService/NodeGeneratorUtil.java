@@ -31,12 +31,12 @@ public abstract class NodeGeneratorUtil {
         nodeMap.put(NodeGeneratorUtil.EMPLOYEE_NODE_TYPE, employee);
     }
 
-    public static String getNodeTypeByClassName(Object object){
+    public static String getNodeTypeByClassName(Object object) {
         String nodeType;
         for (Map.Entry<String, HashSet<String>> entry : nodeMap.entrySet()) {
             HashSet<String> set = entry.getValue();
-            if (set.contains(object.getClass().getName())){
-               nodeType = entry.getKey();
+            if (set.contains(object.getClass().getName())) {
+                nodeType = entry.getKey();
                 return nodeType;
             }
         }

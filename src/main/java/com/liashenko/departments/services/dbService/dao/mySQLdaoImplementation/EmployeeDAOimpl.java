@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.dbService.dao.daoImplementation;
+package com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation;
 
 
 import com.liashenko.departments.services.dbService.HibernateFactoryUtil;

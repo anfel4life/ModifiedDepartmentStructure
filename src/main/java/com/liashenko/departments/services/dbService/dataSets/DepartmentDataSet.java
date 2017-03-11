@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "DEPARTMENT")
-public class DepartmentDataSet implements Serializable  {
+public class DepartmentDataSet implements Serializable {
 
     @Id
     @Column(name = "id", unique = true)

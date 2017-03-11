@@ -1,11 +1,13 @@
-package com.liashenko.departments.services.dbService.dao.daoImplementation;
+package com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation;
 
 import com.liashenko.departments.services.dbService.HibernateFactoryUtil;
 import com.liashenko.departments.services.dbService.dao.DepartmentDAO;
 import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
 import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
-import org.hibernate.*;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
+
 import java.util.ArrayList;
 
 public class DepartmentDAOimpl extends EntityDAOimpl implements DepartmentDAO {
