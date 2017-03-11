@@ -1,10 +1,13 @@
-package com.liashenko.departments.userInterface;
+package com.liashenko.departments.userInterface.utils;
 
-import com.liashenko.departments.services.mainDBService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
-import com.liashenko.departments.services.nodesService.NodeGenerator;
+import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
+import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class StringConstructorUtils {
 
@@ -22,13 +25,6 @@ public abstract class StringConstructorUtils {
 
     private static final String TABLE_HEAD_METHODOLOGY = "Methodology";
     private static final String TABLE_HEAD_LANGUAGE = "Language";
-
-//    public static final String EMPLOYEE_TABLE_NAME = "EMPLOYEE";
-//    public static final String EMPLOYEE_COL_AGE = "age";
-//    public static final String EMPLOYEE_COL_TYPE = "type";
-//    public static final String EMPLOYEE_COL_NAME = "name";
-//    public static final String DEPARTMENT_TABLE_NAME = "DEPARTMENT";
-//    public static final String DEPARTMENT_COL_NAME = "name";
 
     public static String departmentList(ArrayList<DepartmentDataSet> departmentList) {
         StringBuilder sb = new StringBuilder();
@@ -55,8 +51,8 @@ public abstract class StringConstructorUtils {
                 String departmentName = entry.getKey().getName();
                 ArrayList<EmployeeDataSet> employees = new ArrayList<EmployeeDataSet>();
                 employees = entry.getValue();
-                if (employees != null && !employees.isEmpty()){
-                    for (EmployeeDataSet employee : employees){
+                if (employees != null && !employees.isEmpty()) {
+                    for (EmployeeDataSet employee : employees) {
                         sb.append("|-").append(symbolsBetweenColumns(departmentName));
                         sb.append("|-").append(symbolsBetweenColumns(employee.getName()));
                         sb.append("|-").append(symbolsBetweenColumns(employee.getType()));
@@ -164,11 +160,11 @@ public abstract class StringConstructorUtils {
                 .append(String.valueOf(employee.getAge()))
                 .append("\n");
 
-        if (employee.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
+        if (employee.getType().equals(NodeGeneratorUtil.MANAGER_NODE_TYPE)) {
             info.append(whiteSpaces(TABLE_HEAD_METHODOLOGY)).append(":")
                     .append(employee.getMethodology())
                     .append("\n");
-        } else if (employee.getType().equals(NodeGenerator.DEVELOPER_NODE_TYPE)) {
+        } else if (employee.getType().equals(NodeGeneratorUtil.DEVELOPER_NODE_TYPE)) {
             info.append(whiteSpaces(TABLE_HEAD_LANGUAGE)).append(":")
                     .append(employee.getLanguage())
                     .append("\n");

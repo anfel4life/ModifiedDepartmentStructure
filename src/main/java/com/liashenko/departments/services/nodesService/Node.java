@@ -7,13 +7,13 @@ public class Node {
     private int nodeId;
     private String nodeName;
 
-    public Node () {
+    public Node() {
         this.nodeId = 0;
-        this.nodeType = NodeGenerator.ROOT_NODE_TYPE;
-        this.nodeName = NodeGenerator.ROOT_NODE_TYPE;
+        this.nodeType = NodeGeneratorUtil.ROOT_NODE_TYPE;
+        this.nodeName = NodeGeneratorUtil.ROOT_NODE_TYPE;
     }
 
-    public Node (String nodeType, int nodeId, String nodeName) {
+    public Node(String nodeType, int nodeId, String nodeName) {
         this.nodeId = nodeId;
         this.nodeType = nodeType;
         this.nodeName = nodeName;

@@ -1,23 +1,32 @@
 package com.liashenko.departments.userInterface;
 
 
-import com.liashenko.departments.services.mainDBService.MainServiceImpl;
-import com.liashenko.departments.services.mainDBService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.mainDBService.dataSets.EmployeeDataSet;
-import com.liashenko.departments.services.mainService.MainService;
+import com.liashenko.departments.services.dbService.dao.DepartmentDAO;
+import com.liashenko.departments.services.dbService.dao.EmployeeDAO;
+import com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation.DepartmentDAOimpl;
+import com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation.EmployeeDAOimpl;
+import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
+import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
 import com.liashenko.departments.services.nodesService.Node;
-import com.liashenko.departments.services.nodesService.NodeGenerator;
+import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
 import com.liashenko.departments.services.nodesService.VisitedNodesStack;
+import com.liashenko.departments.userInterface.utils.CommandsHolderUtils;
+import com.liashenko.departments.userInterface.utils.StringConstructorUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class CommandsControllerImpl implements CommandsController {
 
-    private static final String COMMAND_IS_NOT_ALLOWED_MSG = "Command is not allowed.";
-    private MainService mainService;
+    private static final Logger classLogger = LogManager.getLogger(CommandsControllerImpl.class);
+    private static final String COMMAND_IS_NOT_ALLOWED_MSG = "Command is not allowed.\n";
+    private DepartmentDAO departmentDao;
+    private EmployeeDAO employeeDao;
 
     public CommandsControllerImpl() {
-        mainService = new MainServiceImpl();
+        departmentDao = new DepartmentDAOimpl();
+        employeeDao = new EmployeeDAOimpl();
     }
 
     @Override
@@ -27,9 +36,17 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.CREATE_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        if (mainService.createNewDepartment(departmentName)){
-            return StringConstructorUtils.departmentList(mainService.getDepartmentsList());
+        if (!isDepartmentExists(departmentName)) {
+            DepartmentDataSet department = new DepartmentDataSet(departmentName);
+            if (departmentDao.insertEntity(department)) {
+                classLogger.info("Created new department: " + departmentName + "\n");
+                return StringConstructorUtils.departmentList(departmentDao.getEntities());
+            }
+        } else {
+            classLogger.info("User tried to create department that had been already created: " + departmentName + "\n");
+            return "Department with name " + departmentName + " exists.";
         }
+        classLogger.info("Couldn't create new department with name " + departmentName + "\n");
         return "Couldn't create new department with name " + departmentName;
     }
 
@@ -40,15 +57,16 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.OPEN_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        DepartmentDataSet department  = mainService.getDepartmentByName(departmentName);
-        if (department != null){
-            Node node = new Node(NodeGenerator.getNodeTypeByClassName(department), department.getId(), department.getName());
+        DepartmentDataSet department = departmentDao.getEntity(departmentName);
+        if (department != null) {
+            Node node = new Node(NodeGeneratorUtil.getNodeTypeByClassName(department), department.getId(), department.getName());
             VisitedNodesStack.getInstance().setNode(node);
-//            System.out.println(">>CommandsControllerImpl() openDepartment " + department.getNodeType() +"//"+department.getNodeId());
-            ArrayList<EmployeeDataSet> employeesList = mainService.getDepartmentEmployeesList(department.getId());
+            ArrayList<EmployeeDataSet> employeesList = departmentDao.getEntityChildren(department.getId());
+            classLogger.info("User opened department " + departmentName + "\n");
             return StringConstructorUtils.employeesList(employeesList);
         }
-        return "Department with name " + departmentName + " is absent.";
+        classLogger.info("User tried to open absent department - " + departmentName + "\n");
+        return "Department with name " + departmentName + " is absent.\n";
     }
 
     @Override
@@ -58,19 +76,22 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.REMOVE_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        DepartmentDataSet departmentToRemove = mainService.getDepartmentByName(departmentName);
-        if (departmentToRemove != null){
-            if (mainService.removeDepartment(departmentToRemove.getId())){
-                return "Department " + departmentName + " was deleted.";
+        DepartmentDataSet departmentToRemove = departmentDao.getEntity(departmentName);
+        if (departmentToRemove != null) {
+            if (departmentDao.removeEntity(departmentToRemove.getId())) {
+                classLogger.info("User deleted department " + departmentName + "\n");
+                return "Department " + departmentName + " was deleted.\n";
             }
         }
+        classLogger.info("User tried to delete department " + departmentName + " unsuccessfully.\n");
         return "Deleting department " + departmentName + " wasn't successful.";
     }
 
     @Override
     public String departmentsList() {
         VisitedNodesStack.getInstance().clear();
-        return StringConstructorUtils.departmentList(mainService.getDepartmentsList());
+        classLogger.info("User has got departments list.\n");
+        return StringConstructorUtils.departmentList(departmentDao.getEntities());
     }
 
     @Override
@@ -94,26 +115,31 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.CREATE_EMPLOYEE_IN_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        DepartmentDataSet department = mainService.getDepartmentByName(departmentName);
+        DepartmentDataSet department = departmentDao.getEntity(departmentName);
         int departmentId = 0;
-        if (department != null){
+        if (department != null) {
             departmentId = department.getId();
             return createEmployee(departmentId, departmentName, employeeName, employeeType, language, methodology,
                     employeeAge);
         }
-        return "Operation wasn't successful.";
+        classLogger.info("User tried to new employee department unsuccessfully.\n");
+        return "Operation wasn't successful.\n";
     }
 
     private String createEmployee(int departmentId, String departmentName, String employeeName, String employeeType,
-                                  String language, String methodology, String employeeAge){
+                                  String language, String methodology, String employeeAge) {
         ArrayList<EmployeeDataSet> employeesList = null;
         CheckParameters cp = new CheckParameters(employeeName, employeeType, language, methodology, employeeAge);
-        if (cp.isCorrect() && mainService.createNewEmployee(cp.getName(), departmentId, cp.getType(), cp.getLanguage(),
-                cp.getMethodology(), cp.getAge())) {
-            employeesList = mainService.getDepartmentEmployeesList(departmentId);
+        EmployeeDataSet newEmployee = new EmployeeDataSet(cp.getName(), cp.getType(), cp.getAge(), departmentId,
+                cp.getMethodology(), cp.getLanguage());
+
+        if (cp.isCorrect() && employeeDao.insertEntity(newEmployee)) {
+            employeesList = departmentDao.getEntityChildren(departmentId);
+            classLogger.info("User created employee " + newEmployee.getName() + " in department " + departmentName);
             return "Employee " + employeeName + " was created in department " + departmentName + ":\n"
                     + StringConstructorUtils.employeesList(employeesList);
         } else {
+            classLogger.info("User tried to new employee department unsuccessfully. " + cp.getMessage() + "\n");
             return "Creating new employee in department " + departmentName + " wasn't successful:" + "\n"
                     + cp.getMessage() + "\n"
                     + StringConstructorUtils.employeesList(employeesList);
@@ -127,10 +153,12 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.OPEN_EMPLOYEE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        EmployeeDataSet employee = mainService.getEmployeeById(new CheckParameters().checkId(employeeId));
-        if (employee != null){
+        EmployeeDataSet employee = employeeDao.getEntity(new CheckParameters().checkId(employeeId));
+        if (employee != null) {
+            classLogger.info("User opened info about employee with id: " + employeeId);
             return StringConstructorUtils.getEmployeeInfo(employee);
         }
+        classLogger.info("User couldn't open info about employee with id: " + employeeId);
         return "Employee with id " + employeeId + " is absent.";
     }
 
@@ -142,24 +170,25 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.UPDATE_EMPLOYEE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-
         ArrayList<EmployeeDataSet> employeesList;
         int departmentId = lastNode.getNodeId();
-        int id  = new CheckParameters().checkId(employeeId);
-        EmployeeDataSet employeeToUpdate = mainService.getEmployeeById(id);
+        int id = new CheckParameters().checkId(employeeId);
+        EmployeeDataSet employeeToUpdate = employeeDao.getEntity(id);
         CheckParameters cp = new CheckParameters(employeeId, employeeName, skillKey, skill, employeeAge,
                 employeeToUpdate);
         employeeToUpdate = cp.getEmployeeToUpdate();
         employeeToUpdate.setDepartmentId(departmentId);
-        if (cp.isCorrect() && mainService.updateEmployee(employeeToUpdate)) {
-            employeesList = mainService.getDepartmentEmployeesList(departmentId);
+        if (cp.isCorrect() && employeeDao.updateEntity(employeeToUpdate)) {
+            employeesList = departmentDao.getEntityChildren(departmentId);
+            classLogger.info("Employee id: " + employeeId + " was updated.");
             return "Employee id:" + employeeId + " was updated:\n"
                     + StringConstructorUtils.employeesList(employeesList);
         }
-            employeesList = mainService.getDepartmentEmployeesList(departmentId);
-            return "Updating employee id:" + employeeId + " wasn't successful:\n"
-                    + cp.getMessage() + "\n"
-                    + StringConstructorUtils.employeesList(employeesList);
+        employeesList = departmentDao.getEntityChildren(departmentId);
+        classLogger.info("Employee id: " + employeeId + " was updated. " + cp.getMessage() + "\n");
+        return "Updating employee id:" + employeeId + " wasn't successful:\n"
+                + cp.getMessage() + "\n"
+                + StringConstructorUtils.employeesList(employeesList);
     }
 
     @Override
@@ -169,15 +198,17 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.REMOVE_EMPLOYEE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        int id  = new CheckParameters().checkId(employeeId);
+        int id = new CheckParameters().checkId(employeeId);
         int departmentId = lastNode.getNodeId();
         ArrayList<EmployeeDataSet> employeesList;
-         if (mainService.removeEmployee(id)){
-             employeesList = mainService.getDepartmentEmployeesList(departmentId);
-            return "Employee id:" + employeeId + " was deleted from department: " + lastNode.getNodeName() +"\n"
+        if (employeeDao.removeEntity(id)) {
+            employeesList = departmentDao.getEntityChildren(departmentId);
+            classLogger.info("Employee id: " + employeeId + " was removed.");
+            return "Employee id:" + employeeId + " was deleted from department: " + lastNode.getNodeName() + "\n"
                     + StringConstructorUtils.employeesList(employeesList);
         }
-        employeesList = mainService.getDepartmentEmployeesList(departmentId);
+        employeesList = departmentDao.getEntityChildren(departmentId);
+        classLogger.info("Employee id: " + employeeId + " was deleted.");
         return "Deleting employee id:" + employeeId + " wasn't successful:\n"
                 + StringConstructorUtils.employeesList(employeesList);
     }
@@ -195,6 +226,7 @@ public class CommandsControllerImpl implements CommandsController {
         for (String com : commandsList) {
             strings.append(com).append("\n");
         }
+        classLogger.info("User called command \"help\"");
         return strings.toString();
     }
 
@@ -205,7 +237,8 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.ALL_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        return StringConstructorUtils.allEmployeeView(mainService.getAllEmployeeView());
+        classLogger.info("User called command \"all\"");
+        return StringConstructorUtils.allEmployeeView(getAllEmployeeView());
     }
 
     @Override
@@ -215,9 +248,10 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.SEARCH_EMPLOYEE_IN_DEPARTMENT_BY_AGE_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        CheckParameters cp  = new CheckParameters();
-        String employeeAge  = cp.checkAge(age);
-        return StringConstructorUtils.getEmployeeList(mainService.getEmployeesFromDepartmentByAge(departmentName, employeeAge));
+        CheckParameters cp = new CheckParameters();
+        String employeeAge = cp.checkAge(age);
+        classLogger.info("User searched employee by age (" + age + ")");
+        return StringConstructorUtils.getEmployeeList(getEmployeesFromDepartmentByAge(departmentName, employeeAge));
     }
 
     @Override
@@ -227,14 +261,88 @@ public class CommandsControllerImpl implements CommandsController {
                 CommandsHolderUtils.MAX_EMPLOYEES_IN_DEPARTMENT_COM)) {
             return COMMAND_IS_NOT_ALLOWED_MSG;
         }
-        switch(employeeType){
+        switch (employeeType) {
             case "m":
-                employeeType = NodeGenerator.MANAGER_NODE_TYPE;
+                employeeType = NodeGeneratorUtil.MANAGER_NODE_TYPE;
                 break;
             case "d":
-                employeeType = NodeGenerator.DEVELOPER_NODE_TYPE;
+                employeeType = NodeGeneratorUtil.DEVELOPER_NODE_TYPE;
                 break;
         }
-        return StringConstructorUtils.topDepartmentsList(mainService.getEmployeeCountWithType(employeeType), employeeType);
+        classLogger.info("User searched department with top employees (" + employeeType + ")");
+        return StringConstructorUtils.topDepartmentsList(getEmployeeCountWithType(employeeType), employeeType);
+    }
+
+    private boolean isDepartmentExists(String dapartmentName) {
+        DepartmentDataSet department = null;
+        department = departmentDao.getEntity(dapartmentName);
+        return department != null;
+    }
+
+    private LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>> getAllEmployeeView() {
+        LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>> result =
+                new LinkedHashMap<DepartmentDataSet, ArrayList<EmployeeDataSet>>();
+        DepartmentDAOimpl departmentDAO = new DepartmentDAOimpl();
+        ArrayList<DepartmentDataSet> departments = departmentDAO.getEntities();
+        if (departments != null && !departments.isEmpty()) {
+            for (DepartmentDataSet department : departments) {
+                ArrayList<EmployeeDataSet> employees = new ArrayList<EmployeeDataSet>();
+                employees = departmentDAO.getEntityChildren(department.getId());
+                result.put(department, employees);
+            }
+        }
+        return result;
+    }
+
+    private HashSet<DepartmentDataSet> getEmployeeCountWithType(String employeeType) {
+        HashSet<DepartmentDataSet> result = new HashSet<DepartmentDataSet>();
+        DepartmentDAOimpl departmentDAO = new DepartmentDAOimpl();
+        TreeMap<Integer, DepartmentDataSet> sortedByCountMap =
+                new TreeMap<Integer, DepartmentDataSet>(Collections.reverseOrder());
+        ArrayList<DepartmentDataSet> departments = departmentDAO.getEntities();
+        if (departments != null && !departments.isEmpty()) {
+            for (DepartmentDataSet department : departments) {
+                ArrayList<EmployeeDataSet> employeesByType = new ArrayList<EmployeeDataSet>();
+                ArrayList<EmployeeDataSet> employees = departmentDAO.getEntityChildren(department.getId());
+                if (employees != null && !employees.isEmpty()) {
+                    Integer employeesCount = 0;
+                    for (EmployeeDataSet employee : employees) {
+                        if (employee.getType().equals(employeeType)) {
+                            employeesCount = employeesCount + 1;
+                            employeesByType.add(employee);
+                        }
+                    }
+                    sortedByCountMap.put(employeesCount, department);
+                }
+            }
+        }
+
+        if (sortedByCountMap != null && !sortedByCountMap.isEmpty()) {
+            int maxCount = sortedByCountMap.firstKey();
+            for (Map.Entry<Integer, DepartmentDataSet> entry : sortedByCountMap.entrySet()) {
+                int count = entry.getKey();
+                if (count >= maxCount) {
+                    result.add(entry.getValue());
+                } else {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private ArrayList<EmployeeDataSet> getEmployeesFromDepartmentByAge(String departmentName, String age) {
+        ArrayList<EmployeeDataSet> resultList = new ArrayList<EmployeeDataSet>();
+        DepartmentDAOimpl departmentDAO = new DepartmentDAOimpl();
+        DepartmentDataSet department = departmentDAO.getEntity(departmentName);
+        ArrayList<EmployeeDataSet> employeesList = departmentDAO.getEntityChildren(department.getId());
+        if (employeesList != null && !employeesList.isEmpty()) {
+            for (EmployeeDataSet employee : employeesList) {
+                if (employee.getAge().equals(age)) {
+                    resultList.add(employee);
+                }
+            }
+        }
+        return resultList;
     }
 }

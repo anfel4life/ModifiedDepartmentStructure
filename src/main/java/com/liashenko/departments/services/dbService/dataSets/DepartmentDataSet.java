@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.mainDBService.dataSets;
+package com.liashenko.departments.services.dbService.dataSets;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "DEPARTMENT")
-public class DepartmentDataSet implements Serializable  {
+public class DepartmentDataSet implements Serializable {
 
     @Id
     @Column(name = "id", unique = true)
@@ -34,12 +34,12 @@ public class DepartmentDataSet implements Serializable  {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -57,6 +57,7 @@ public class DepartmentDataSet implements Serializable  {
     @Override
     public String toString() {
         return "DepartmentDataSet{" +
-                "id=" + id + "', name='" + name + '\'' + '}';
+                "id=" + id +
+                ", name=" + name + "}\n";
     }
 }
