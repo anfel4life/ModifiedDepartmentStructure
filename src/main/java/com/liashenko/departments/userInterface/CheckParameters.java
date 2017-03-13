@@ -12,6 +12,7 @@ public class CheckParameters {
     public static final String DEPARTMENT_NAME_FIELD_LENGTH = "45";
     private boolean isCorrect = true;
     private int id;
+    //todo: will be initialized twice
     private String message = "";
     private String age;
     private String name;
@@ -32,6 +33,7 @@ public class CheckParameters {
     public CheckParameters(String employeeId, String employeeName, String skillKey, String skill, String employeeAge,
                            EmployeeDataSet employeeToUpdate) {
         this.isCorrect = true;
+        //todo: will be initialized twice
         this.message = "";
         this.employeeToUpdate = employeeToUpdate;
         this.id = checkId(employeeId, employeeToUpdate);
@@ -44,6 +46,7 @@ public class CheckParameters {
     public CheckParameters(String employeeName, String employeeType, String language, String methodology,
                            String employeeAge) {
         this.isCorrect = true;
+        //todo: will be initialized twice
         this.message = "";
         this.age = checkAge(employeeAge);
         this.name = checkName(employeeName);
