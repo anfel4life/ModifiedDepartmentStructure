@@ -1,2 +1,5 @@
+
+mvn compile clean package assembly:single
+
 -Dlog4j.configurationFile=cfg/log4j2.xml
 to VM options

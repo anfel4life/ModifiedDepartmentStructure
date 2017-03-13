@@ -1,8 +1,8 @@
-package com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation;
+package com.liashenko.departments.dao.mysql;
 
-import com.liashenko.departments.services.dbService.DataAccessLayerException;
-import com.liashenko.departments.services.dbService.HibernateFactoryUtil;
-import com.liashenko.departments.services.dbService.dao.EntityDAO;
+import com.liashenko.departments.services.database.DataAccessLayerException;
+import com.liashenko.departments.services.database.HibernateFactoryUtil;
+import com.liashenko.departments.dao.EntityDAO;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

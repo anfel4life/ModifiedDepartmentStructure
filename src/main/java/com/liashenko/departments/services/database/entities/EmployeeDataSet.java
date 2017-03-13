@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.dbService.dataSets;
+package com.liashenko.departments.services.database.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -1,15 +1,15 @@
 package com.liashenko.departments.userInterface;
 
 
-import com.liashenko.departments.services.dbService.dao.DepartmentDAO;
-import com.liashenko.departments.services.dbService.dao.EmployeeDAO;
-import com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation.DepartmentDAOimpl;
-import com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation.EmployeeDAOimpl;
-import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
-import com.liashenko.departments.services.nodesService.Node;
-import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
-import com.liashenko.departments.services.nodesService.VisitedNodesStack;
+import com.liashenko.departments.dao.DepartmentDAO;
+import com.liashenko.departments.dao.EmployeeDAO;
+import com.liashenko.departments.dao.mysql.DepartmentDAOimpl;
+import com.liashenko.departments.dao.mysql.EmployeeDAOimpl;
+import com.liashenko.departments.services.database.entities.DepartmentDataSet;
+import com.liashenko.departments.services.database.entities.EmployeeDataSet;
+import com.liashenko.departments.services.nodes.Node;
+import com.liashenko.departments.services.nodes.NodeGeneratorUtil;
+import com.liashenko.departments.services.nodes.VisitedNodesStack;
 import com.liashenko.departments.userInterface.utils.CommandsHolderUtils;
 import com.liashenko.departments.userInterface.utils.StringConstructorUtils;
 import org.apache.logging.log4j.LogManager;

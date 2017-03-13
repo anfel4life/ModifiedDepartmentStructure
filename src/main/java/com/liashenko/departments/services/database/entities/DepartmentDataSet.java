@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.dbService.dataSets;
+package com.liashenko.departments.services.database.entities;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;

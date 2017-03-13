@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.dbService.dao;
+package com.liashenko.departments.dao;
 
 
 public interface EntityDAO<T> {

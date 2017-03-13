@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.dbService;
+package com.liashenko.departments.services.database;
 
 import org.apache.logging.log4j.LogManager;
 

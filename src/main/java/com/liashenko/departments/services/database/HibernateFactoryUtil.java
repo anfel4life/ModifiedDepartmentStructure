@@ -1,8 +1,8 @@
-package com.liashenko.departments.services.dbService;
+package com.liashenko.departments.services.database;
 
 
-import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.database.entities.DepartmentDataSet;
+import com.liashenko.departments.services.database.entities.EmployeeDataSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;

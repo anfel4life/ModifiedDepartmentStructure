@@ -1,9 +1,9 @@
-package com.liashenko.departments.services.dbService.dao.mySQLdaoImplementation;
+package com.liashenko.departments.dao.mysql;
 
-import com.liashenko.departments.services.dbService.HibernateFactoryUtil;
-import com.liashenko.departments.services.dbService.dao.DepartmentDAO;
-import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.database.HibernateFactoryUtil;
+import com.liashenko.departments.dao.DepartmentDAO;
+import com.liashenko.departments.services.database.entities.DepartmentDataSet;
+import com.liashenko.departments.services.database.entities.EmployeeDataSet;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;

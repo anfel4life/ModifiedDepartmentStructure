@@ -1,8 +1,8 @@
 package com.liashenko.departments.userInterface;
 
 
-import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
-import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
+import com.liashenko.departments.services.database.entities.EmployeeDataSet;
+import com.liashenko.departments.services.nodes.NodeGeneratorUtil;
 
 public class CheckParameters {
 

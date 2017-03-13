@@ -1,9 +1,9 @@
-package com.liashenko.departments.services.nodesService;
+package com.liashenko.departments.services.nodes;
 
 
-import com.liashenko.departments.services.dbService.dataSets.DepartmentDataSet;
-import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
-import com.liashenko.departments.services.dbService.dataSets.Root;
+import com.liashenko.departments.services.database.entities.DepartmentDataSet;
+import com.liashenko.departments.services.database.entities.EmployeeDataSet;
+import com.liashenko.departments.services.database.entities.Root;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,7 +1,7 @@
 package com.liashenko.departments.userInterface.utils;
 
 
-import com.liashenko.departments.services.nodesService.NodeGeneratorUtil;
+import com.liashenko.departments.services.nodes.NodeGeneratorUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;

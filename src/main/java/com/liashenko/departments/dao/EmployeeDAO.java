@@ -1,7 +1,7 @@
-package com.liashenko.departments.services.dbService.dao;
+package com.liashenko.departments.dao;
 
 
-import com.liashenko.departments.services.dbService.dataSets.EmployeeDataSet;
+import com.liashenko.departments.services.database.entities.EmployeeDataSet;
 
 public interface EmployeeDAO extends EntityDAO {
     EmployeeDataSet getEntity(int entityId);

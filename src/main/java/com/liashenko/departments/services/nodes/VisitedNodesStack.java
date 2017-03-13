@@ -1,4 +1,4 @@
-package com.liashenko.departments.services.nodesService;
+package com.liashenko.departments.services.nodes;
 
 
 import java.util.LinkedList;
