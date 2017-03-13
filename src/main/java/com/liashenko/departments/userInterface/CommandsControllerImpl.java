@@ -172,6 +172,7 @@ public class CommandsControllerImpl implements CommandsController {
         }
         ArrayList<EmployeeDataSet> employeesList;
         int departmentId = lastNode.getNodeId();
+        //todo: .checkId could be static to avoid new initialization of CheckParameters each time when method is invoked
         int id = new CheckParameters().checkId(employeeId);
         EmployeeDataSet employeeToUpdate = employeeDao.getEntity(id);
         CheckParameters cp = new CheckParameters(employeeId, employeeName, skillKey, skill, employeeAge,
@@ -200,6 +201,8 @@ public class CommandsControllerImpl implements CommandsController {
         }
         int id = new CheckParameters().checkId(employeeId);
         int departmentId = lastNode.getNodeId();
+        //todo: prefer interfaces rather then real implementations, I believe I've told you about benefits of this.
+        //todo: List<EmployeeDataSet> employeesList;
         ArrayList<EmployeeDataSet> employeesList;
         if (employeeDao.removeEntity(id)) {
             employeesList = departmentDao.getEntityChildren(departmentId);
